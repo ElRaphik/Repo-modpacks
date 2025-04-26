@@ -34,7 +34,7 @@ This modpack automatically keeps its dependencies updated using a GitHub Actions
 
 [![Sync Manifest](https://github.com/ElRaphik/Repo-modpacks/actions/workflows/sync_manifest.yml/badge.svg)](https://github.com/ElRaphik/Repo-modpacks/actions/workflows/sync_manifest.yml)
 
-[![Publish to Thunderstore](https://github.com/ElRaphik/Repo-modpacks/actions/workflows/publish_to_thunderstore.yml/badge.svg)](https://github.com/ElRaphik/Repo-modpacks/actions/workflows/publish_to_thunderstore.yml)
+[![Publish to Thunderstore](https://github.com/ElRaphik/Repo-modpacks/actions/workflows/publish.yml/badge.svg)](https://github.com/ElRaphik/Repo-modpacks/actions/workflows/publish.yml)
 
 (*Badge may not render correctly on Thunderstore — no problem if it doesn't!*)
 

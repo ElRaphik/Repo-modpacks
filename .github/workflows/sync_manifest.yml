@@ -44,7 +44,7 @@ jobs:
         run: echo "VERSION=$(cat version.txt)" >> $GITHUB_ENV
 
       - name: Commit and push changes
-        if: success()
+        if: env.VERSION != ''
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -53,14 +53,14 @@ jobs:
           git push
 
       - name: Create and push Git tag
-        if: success()
+        if: env.VERSION != ''
         run: |
           git fetch --tags
           git tag v${{ env.VERSION }}
           git push origin v${{ env.VERSION }}
 
       - name: Trigger Publish and Release Workflow
-        if: success()
+        if: env.VERSION != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
