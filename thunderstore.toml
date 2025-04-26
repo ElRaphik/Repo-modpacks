@@ -1,6 +1,6 @@
 name = "ElRaphik_Modpack"
 description = "A curated collection of mods to enhance your REPO gameplay experience, mostly used for my friends and I."
-version = "1.0.1"
+version = "1.0.0"
 website_url = "https://github.com/ElRaphik/Repo-modpacks"
 contains_nsfw_content = false
 package_type = "modpack"
