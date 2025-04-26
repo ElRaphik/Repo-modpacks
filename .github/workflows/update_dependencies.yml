@@ -5,6 +5,9 @@ on:
     - cron: '0 5 * * *'  # every day at 5 AM UTC
   workflow_dispatch:      # allow manual run if needed
 
+permissions:
+  contents: write
+
 jobs:
   update-dependencies:
     runs-on: ubuntu-latest

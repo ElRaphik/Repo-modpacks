@@ -1,5 +1,5 @@
 import json
-import toml
+import toml # type: ignore
 
 MANIFEST_PATH = "manifest.json"
 THUNDERSTORE_TOML_PATH = "thunderstore.toml"

@@ -7,6 +7,9 @@ on:
       - 'manifest.json'
       - '.github/workflows/update_thunderstore_toml.yml'
 
+permissions:
+  contents: write
+
 jobs:
   update-thunderstore-toml:
     if: github.actor != 'github-actions[bot]'  # Only run for human commits
