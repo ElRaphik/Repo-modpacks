@@ -30,9 +30,11 @@ This modpack automatically keeps its dependencies updated using a GitHub Actions
 - If any mod has a new version, the `manifest.json` file is updated.
 - If a mod is missing, an issue is created automatically to track it.
 
-### GitHub Badge
+### GitHub Badges
 
-[![Update Dependencies](https://github.com/<your-username>/<your-repo>/actions/workflows/update_dependencies.yml/badge.svg)](https://github.com/<your-username>/<your-repo>/actions/workflows/update_dependencies.yml)
+[![Sync Manifest](https://github.com/ElRaphik/Repo-modpacks/actions/workflows/sync_manifest.yml/badge.svg)](https://github.com/ElRaphik/Repo-modpacks/actions/workflows/sync_manifest.yml)
+
+[![Publish to Thunderstore](https://github.com/ElRaphik/Repo-modpacks/actions/workflows/publish_to_thunderstore.yml/badge.svg)](https://github.com/ElRaphik/Repo-modpacks/actions/workflows/publish_to_thunderstore.yml)
 
 (*Badge may not render correctly on Thunderstore — no problem if it doesn't!*)
 
@@ -46,7 +48,7 @@ Big thanks to all the mod creators whose hard work made this modpack possible!
 
 ## License
 
-This project follows the same licenses as the included mods. See each mod's page for more information.
+This project is released into the public domain under [The Unlicense](https://unlicense.org/). You are free to use, modify, and distribute it without any restrictions.
 
 ---
 

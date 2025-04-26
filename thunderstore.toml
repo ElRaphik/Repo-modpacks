@@ -1,9 +1,11 @@
 name = "MyREPOModpack"
 description = "A curated collection of mods to enhance your REPO gameplay experience."
 version = "1.0.0"
-website_url = "https://github.com/<your-username>/<your-repo>"
+website_url = "https://github.com/ElRaphik/Repo-modpacks"
 contains_nsfw_content = false
 package_type = "modpack"
+icon = "icon.png"
+readme = "README.md"
 communities = ["repo"]
 categories = ["modpacks"]
 

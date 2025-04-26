@@ -2,12 +2,67 @@ import json
 import os
 import requests
 from packaging import version
+import subprocess
+from packaging import version
+from datetime import date
 
 GITHUB_REPO = os.getenv("GITHUB_REPOSITORY")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
 THUNDERSTORE_API = "https://thunderstore.io/api/v1/package/"
 MANIFEST_PATH = "manifest.json"
+SNAPSHOT_PATH = ".dependencies_snapshot.json"
+
+def update_changelog(new_version, added_mods, updated_mods, removed_mods):
+    today = date.today().isoformat()
+    changelog_entry = f"## v{new_version} - {today}\n\n"
+
+    if added_mods:
+        changelog_entry += "### Added\n"
+        for mod in added_mods:
+            changelog_entry += f"- {mod}\n"
+        changelog_entry += "\n"
+
+    if updated_mods:
+        changelog_entry += "### Updated\n"
+        for mod in updated_mods:
+            changelog_entry += f"- {mod}\n"
+        changelog_entry += "\n"
+
+    if removed_mods:
+        changelog_entry += "### Removed\n"
+        for mod in removed_mods:
+            changelog_entry += f"- {mod}\n"
+        changelog_entry += "\n"
+
+    # Read the existing changelog if exists
+    try:
+        with open("CHANGELOG.md", "r") as f:
+            existing_changelog = f.read()
+    except FileNotFoundError:
+        existing_changelog = ""
+
+    # Prepend new entry
+    with open("CHANGELOG.md", "w") as f:
+        f.write(changelog_entry + existing_changelog)
+
+    print("CHANGELOG.md updated.")
+
+def load_snapshot(path):
+    if os.path.exists(path):
+        with open(path, 'r') as f:
+            return json.load(f)
+    return []
+
+def save_snapshot(path, dependencies):
+    with open(path, 'w') as f:
+        json.dump(dependencies, f, indent=4)
+
+def bump_patch(ver_str):
+    parsed_version = version.parse(ver_str)
+    if not isinstance(parsed_version, version.Version):
+        raise ValueError(f"Invalid version format: {ver_str}")
+    return f"{parsed_version.major}.{parsed_version.minor}.{parsed_version.micro + 1}"
 
 
 def load_manifest(path):
@@ -57,6 +112,10 @@ def main():
     updated = False
     new_dependencies = []
 
+    updated_mods = []
+    added_mods = []
+    removed_mods = []
+
     for dep in dependencies:
         try:
             namespace, name, current_version = dep.split("-")
@@ -78,15 +137,61 @@ def main():
             updated = True
             new_dep = f"{namespace}-{name}-{latest}"
             new_dependencies.append(new_dep)
+            updated_mods.append(f"{namespace}-{name} ({current_version} → {latest})")
         else:
             new_dependencies.append(dep)
 
+    snapshot_dependencies = load_snapshot(SNAPSHOT_PATH)
+
+    if dependencies != snapshot_dependencies:
+        print("Dependencies list changed (mod added or removed).")
+        updated = True  # Force bump version even if no updates were detected
+
+        # Compare old vs new dependencies
+        snapshot_set = set(snapshot_dependencies)
+        current_set = set(new_dependencies)
+
+        added = current_set - snapshot_set
+        removed = snapshot_set - current_set
+
+        for mod in added:
+            added_mods.append(mod)
+
+        for mod in removed:
+            removed_mods.append(mod)
+
+
+    if updated:
+        # (bump version, save manifest, regenerate toml, etc)
+        
+        # Save new snapshot
+        save_snapshot(SNAPSHOT_PATH, dependencies)
+
     if updated:
         manifest["dependencies"] = new_dependencies
+
+        # Bump version
+        current_version = manifest.get("version_number", "1.0.0")
+        new_version = bump_patch(current_version)
+        manifest["version_number"] = new_version
+
         save_manifest(MANIFEST_PATH, manifest)
-        print("Manifest updated.")
+        print(f"Manifest updated. Version bumped to v{new_version}")
+
+        # Save the version number into a file for GitHub Actions
+        with open("version.txt", "w") as f:
+            f.write(new_version)
+        
+        # Regenerate thunderstore.toml to stay in sync
+        try:
+            subprocess.run(["python", "generate_thunderstore_toml.py"], check=True)
+            print("thunderstore.toml regenerated successfully.")
+        except subprocess.CalledProcessError:
+            print("Failed to regenerate thunderstore.toml.")
+            
+        update_changelog(new_version, added_mods, updated_mods, removed_mods)
     else:
-        print("All dependencies are up to date.")
+        print("All dependencies are up to date. No changes, skipping thunderstore.toml regeneration.")
 
 
 if __name__ == "__main__":

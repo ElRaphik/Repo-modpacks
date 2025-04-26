@@ -1,0 +1,59 @@
+name: Sync Manifest and Thunderstore TOML
+
+on:
+  schedule:
+    - cron: '0 5 * * *'  # every day at 5 AM UTC
+  workflow_dispatch:      # allow manual run if needed
+  push:
+    branches: [ main ]
+    paths:
+      - 'manifest.json'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Python libraries
+        run: |
+          pip install requests packaging toml
+
+      - name: Run dependency updater
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python update_dependencies.py
+
+      - name: Read new version
+        id: get-version
+        run: echo "VERSION=$(cat version.txt)" >> $GITHUB_ENV
+
+      - name: Commit and push changes
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add manifest.json thunderstore.toml .dependencies_snapshot.json CHANGELOG.md
+          git diff --cached --quiet || git commit -m "chore: update dependencies and bump to v${{ env.VERSION }}"
+          git push
+
+      - name: Create and push Git tag
+        if: success()
+        run: |
+          git fetch --tags
+          git tag v${{ env.VERSION }}
+          git push origin v${{ env.VERSION }}
+
