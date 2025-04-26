@@ -15,6 +15,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Python libraries
+        run: |
+          pip install toml
+
       - name: Detect if Manual Publish
         run: |
           if [ "${{ github.actor }}" = "github-actions[bot]" ]; then
