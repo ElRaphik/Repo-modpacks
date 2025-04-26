@@ -1,0 +1,28 @@
+name: Publish Modpack to Thunderstore
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Thunderstore CLI
+        run: |
+          curl -L -o tcli.tar.gz https://github.com/thunderstore-io/thunderstore-cli/releases/latest/download/tcli-0.2.4-linux-x64.tar.gz
+          mkdir tcli
+          tar -xzf tcli.tar.gz -C tcli
+          chmod +x tcli/tcli
+
+      - name: Initialize Thunderstore CLI
+        env:
+          THUNDERSTORE_TOKEN: ${{ secrets.THUNDERSTORE_TOKEN }}
+        run: |
+          ./tcli/tcli init --token "$THUNDERSTORE_TOKEN" --community repo --namespace <your-namespace>
+
+      - name: Publish to Thunderstore
+        run: ./tcli/tcli publish

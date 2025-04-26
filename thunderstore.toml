@@ -1,0 +1,13 @@
+name = "MyREPOModpack"
+description = "A curated collection of mods to enhance your REPO gameplay experience."
+version = "1.0.0"
+website_url = "https://github.com/<your-username>/<your-repo>"
+contains_nsfw_content = false
+package_type = "modpack"
+communities = ["repo"]
+categories = ["modpacks"]
+
+[dependencies]
+"cooldev-AmazingMod" = "*"
+"proplayer-GameplayTweaks" = "*"
+"thebest-ModEnhancer" = "*"

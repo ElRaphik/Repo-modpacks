@@ -1,0 +1,27 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment folders (in case you use venvs locally)
+venv/
+.env/
+
+# VSCode settings (if you use VSCode)
+.vscode/
+
+# MacOS system files
+.DS_Store
+
+# Thunderstore CLI cache (if you start using it)
+.thunderstore/
+
+# Python logs
+*.log
+
+# ZIP packages (if you generate modpack archives manually)
+*.zip
+
+# Build outputs (if needed later)
+build/
+dist/
