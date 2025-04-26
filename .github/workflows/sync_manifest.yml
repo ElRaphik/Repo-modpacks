@@ -57,3 +57,14 @@ jobs:
           git tag v${{ env.VERSION }}
           git push origin v${{ env.VERSION }}
 
+      - name: Trigger Publish and Release Workflow
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "🚀 Triggering Publish Workflow..."
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            https://api.github.com/repos/${{ github.repository }}/actions/workflows/publish.yml/dispatches \
+            -d '{"ref":"main"}'

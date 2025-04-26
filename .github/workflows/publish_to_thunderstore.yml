@@ -1,9 +1,6 @@
 name: Publish Modpack to Thunderstore
 
 on:
-  push:
-    tags:
-      - 'v*'
   workflow_dispatch:
 
 permissions:
@@ -16,6 +13,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Detect if Manual Publish
+        run: |
+          if [ "${{ github.actor }}" = "github-actions[bot]" ]; then
+            echo "IS_MANUAL=false" >> $GITHUB_ENV
+          else
+            echo "IS_MANUAL=true" >> $GITHUB_ENV
+          fi
 
       - name: Download Thunderstore CLI
         run: |
@@ -49,7 +54,8 @@ jobs:
           echo "🏗️ Building the modpack..."
           ./tcli/tcli build
 
-      - name: Publish Modpack (only on tag push)
+      - name: Publish Modpack (only on automatic call)
+        if: env.IS_MANUAL == 'false'
         env:
           THUNDERSTORE_TOKEN: ${{ secrets.THUNDERSTORE_TOKEN }}
           THUNDERSTORE_TEAM: ${{ vars.THUNDERSTORE_TEAM }}
@@ -58,7 +64,7 @@ jobs:
           ./tcli/tcli publish
 
       - name: Publish Summary
-        if: github.event_name == 'push'
+        if: env.IS_MANUAL == 'false'
         run: |
           echo "## 🚀 Published Modpack Version" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -66,7 +72,7 @@ jobs:
           echo "**Published to:** [Thunderstore](https://thunderstore.io/c/repo/) 🌩️" >> $GITHUB_STEP_SUMMARY
 
       - name: Create GitHub Release
-        if: github.event_name == 'push'
+        if: env.IS_MANUAL == 'false'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -77,7 +83,7 @@ jobs:
           gh release create "${GITHUB_REF_NAME}" builds/*.zip --title "${GITHUB_REF_NAME}" --notes-file release_notes.md
 
       - name: Notify Discord (only on successful publish)
-        if: github.event_name == 'push'
+        if: env.IS_MANUAL == 'false'
         run: |
           echo "📢 Sending Discord notification..."
           curl -H "Content-Type: application/json" \
