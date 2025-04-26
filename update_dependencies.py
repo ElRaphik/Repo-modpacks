@@ -9,7 +9,7 @@ from datetime import date
 GITHUB_REPO = os.getenv("GITHUB_REPOSITORY")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
-THUNDERSTORE_API = "https://thunderstore.io/api/v1/package/"
+THUNDERSTORE_API = "https://thunderstore.io/api/experimental/package/"
 MANIFEST_PATH = "manifest.json"
 SNAPSHOT_PATH = ".dependencies_snapshot.json"
 
