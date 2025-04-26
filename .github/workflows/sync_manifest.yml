@@ -11,6 +11,8 @@ on:
 
 permissions:
   contents: write
+  actions: write
+  issues: write
 
 jobs:
   sync:

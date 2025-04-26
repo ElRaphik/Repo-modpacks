@@ -3,7 +3,6 @@ import os
 import requests
 from packaging import version
 import subprocess
-from packaging import version
 from datetime import date
 
 GITHUB_REPO = os.getenv("GITHUB_REPOSITORY")
@@ -35,14 +34,12 @@ def update_changelog(new_version, added_mods, updated_mods, removed_mods):
             changelog_entry += f"- {mod}\n"
         changelog_entry += "\n"
 
-    # Read the existing changelog if exists
     try:
         with open("CHANGELOG.md", "r") as f:
             existing_changelog = f.read()
     except FileNotFoundError:
         existing_changelog = ""
 
-    # Prepend new entry
     with open("CHANGELOG.md", "w") as f:
         f.write(changelog_entry + existing_changelog)
 
@@ -64,16 +61,13 @@ def bump_patch(ver_str):
         raise ValueError(f"Invalid version format: {ver_str}")
     return f"{parsed_version.major}.{parsed_version.minor}.{parsed_version.micro + 1}"
 
-
 def load_manifest(path):
     with open(path, 'r') as f:
         return json.load(f)
 
-
 def save_manifest(path, data):
     with open(path, 'w') as f:
         json.dump(data, f, indent=4)
-
 
 def get_latest_version(namespace, name):
     url = f"{THUNDERSTORE_API}{namespace}/{name}/"
@@ -82,15 +76,13 @@ def get_latest_version(namespace, name):
         return None
     resp.raise_for_status()
     package_data = resp.json()
-    latest_version = package_data['latest']['version_number']
-    return latest_version
-
+    return package_data['latest']['version_number']
 
 def create_github_issue(mod_full_name):
     if not GITHUB_TOKEN or not GITHUB_REPO:
         print("Missing GitHub token or repo. Cannot create issue.")
         return
-    
+
     url = f"https://api.github.com/repos/{GITHUB_REPO}/issues"
     headers = {
         "Authorization": f"Bearer {GITHUB_TOKEN}",
@@ -103,7 +95,6 @@ def create_github_issue(mod_full_name):
     resp = requests.post(url, headers=headers, json=data)
     if resp.status_code != 201:
         print(f"Failed to create issue: {resp.text}")
-
 
 def main():
     manifest = load_manifest(MANIFEST_PATH)
@@ -143,11 +134,10 @@ def main():
 
     snapshot_dependencies = load_snapshot(SNAPSHOT_PATH)
 
-    if dependencies != snapshot_dependencies:
+    if new_dependencies != snapshot_dependencies:
         print("Dependencies list changed (mod added or removed).")
-        updated = True  # Force bump version even if no updates were detected
+        updated = True
 
-        # Compare old vs new dependencies
         snapshot_set = set(snapshot_dependencies)
         current_set = set(new_dependencies)
 
@@ -160,17 +150,9 @@ def main():
         for mod in removed:
             removed_mods.append(mod)
 
-
-    if updated:
-        # (bump version, save manifest, regenerate toml, etc)
-        
-        # Save new snapshot
-        save_snapshot(SNAPSHOT_PATH, dependencies)
-
     if updated:
         manifest["dependencies"] = new_dependencies
 
-        # Bump version
         current_version = manifest.get("version_number", "1.0.0")
         new_version = bump_patch(current_version)
         manifest["version_number"] = new_version
@@ -178,21 +160,20 @@ def main():
         save_manifest(MANIFEST_PATH, manifest)
         print(f"Manifest updated. Version bumped to v{new_version}")
 
-        # Save the version number into a file for GitHub Actions
+        save_snapshot(SNAPSHOT_PATH, new_dependencies)
+
         with open("version.txt", "w") as f:
             f.write(new_version)
-        
-        # Regenerate thunderstore.toml to stay in sync
+
         try:
             subprocess.run(["python", "generate_thunderstore_toml.py"], check=True)
             print("thunderstore.toml regenerated successfully.")
         except subprocess.CalledProcessError:
             print("Failed to regenerate thunderstore.toml.")
-            
+
         update_changelog(new_version, added_mods, updated_mods, removed_mods)
     else:
         print("All dependencies are up to date. No changes, skipping thunderstore.toml regeneration.")
-
 
 if __name__ == "__main__":
     main()
