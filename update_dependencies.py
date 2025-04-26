@@ -56,6 +56,8 @@ def save_snapshot(path, dependencies):
         json.dump(dependencies, f, indent=4)
 
 def bump_patch(ver_str):
+    if ver_str == "":
+        return "1.0.0"
     parsed_version = version.parse(ver_str)
     if not isinstance(parsed_version, version.Version):
         raise ValueError(f"Invalid version format: {ver_str}")
@@ -153,7 +155,7 @@ def main():
     if updated:
         manifest["dependencies"] = new_dependencies
 
-        current_version = manifest.get("version_number", "1.0.0")
+        current_version = manifest.get("version_number", "")
         new_version = bump_patch(current_version)
         manifest["version_number"] = new_version
 
