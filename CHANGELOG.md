@@ -1,3 +1,11 @@
+## v1.0.4 - 2025-04-26
+
+### Added
+- Rudeus-Vacuum_Enemy-1.0.13
+
+### Removed
+- Rudeus-Vacuum_Enemy-1.0.0
+
 ## v1.0.3 - 2025-04-26
 
 ### Updated
