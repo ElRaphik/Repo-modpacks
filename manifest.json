@@ -1,6 +1,6 @@
 {
     "name": "ElRaphik_Modpack",
-    "version_number": "1.0.2",
+    "version_number": "1.0.3",
     "website_url": "https://github.com/ElRaphik/Repo-modpacks",
     "description": "A curated collection of mods to enhance your REPO gameplay experience, mostly used for my friends and I.",
     "dependencies": [
@@ -49,6 +49,6 @@
         "OrtonLongGaming-FNAFLevel-1.0.3",
         "ironbean-LevelNumberUI-1.0.0",
         "x753_REPO-CustomColors-1.1.1",
-        "Rudeus-Vacuum_Enemy-1.0.0"
+        "Rudeus-Vacuum_Enemy-1.0.13"
     ]
 }
