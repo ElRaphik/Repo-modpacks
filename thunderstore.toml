@@ -17,6 +17,9 @@ communities = [ "repo",]
 icon = "./icon.png"
 readme = "./README.md"
 outdir = "./build"
+[[build.copy]]
+source = "./"
+target = ""
 
 [package.dependencies]
 Traktool-SharedUpgrades = "2.1.3"
