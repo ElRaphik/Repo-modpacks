@@ -1,5 +1,8 @@
 import json
 import toml # type: ignore
+import os
+
+THUNDERSTORE_TEAM = os.getenv("THUNDERSTORE_TEAM")
 
 MANIFEST_PATH = "manifest.json"
 THUNDERSTORE_TOML_PATH = "thunderstore.toml"
@@ -14,28 +17,50 @@ def save_thunderstore_toml(path, data):
 
 def main():
     manifest = load_manifest(MANIFEST_PATH)
-
+    
     dependencies = manifest.get("dependencies", [])
     deps = {}
 
     for dep in dependencies:
         try:
-            namespace, name, _ = dep.split("-")
-            deps[f"{namespace}-{name}"] = "*"  # Always latest compatible
+            namespace, name, version = dep.split("-")
+            deps[f"{namespace}-{name}"] = f"{version}"  # Always latest compatible
         except ValueError:
             print(f"Skipping malformed dependency: {dep}")
             continue
+    
+    package = {
+        "namespace": THUNDERSTORE_TEAM,
+        "name": manifest.get("name", "PackageName"),
+        "versionNumber": manifest.get("version_number", "1.0.0"),
+        "description": manifest.get("description", "No description provided."),
+        "website_url": manifest.get("website_url", "https://thunderstore.io"),
+        "containsNsfwContent": False,
+        "dependencies": deps
+    }
+
+    publish = {
+        "repository": "https://thunderstore.io",
+        "communities": [ "repo", ],
+        "categories": { "repo": [ "modpacks", ] }
+    }
+
+    config = {
+        "schemaVersion": "0.0.1"
+    }
+
+    build = {
+        "icon": "./icon.png",
+        "readme": "./README.md",
+        "outdir": "./build",
+        "copy": { "source": "./dist", "target": "" }
+    }
 
     thunderstore_data = {
-        "name": manifest.get("name", "UnknownModpack"),
-        "description": manifest.get("description", "No description provided."),
-        "version": manifest.get("version_number", "1.0.0"),
-        "website_url": manifest.get("website_url", "https://example.com"),
-        "contains_nsfw_content": False,
-        "package_type": "modpack",
-        "communities": ["repo"],  # You may want to adjust this community name
-        "categories": ["modpacks"],
-        "dependencies": deps
+        "config": config,
+        "package": package,
+        "publish": publish,
+        "build": build
     }
 
     save_thunderstore_toml(THUNDERSTORE_TOML_PATH, thunderstore_data)
