@@ -53,7 +53,7 @@ def main():
         "icon": "./icon.png",
         "readme": "./README.md",
         "outdir": "./build",
-        "copy": { "source": "./dist", "target": "" }
+        "copy": [{ "source": "./dist", "target": "" }]
     }
 
     thunderstore_data = {
