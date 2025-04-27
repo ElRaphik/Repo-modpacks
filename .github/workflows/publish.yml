@@ -57,7 +57,6 @@ jobs:
 
       - name: Build Modpack
         run: |
-          ./tcli/tcli init
           echo "🏗️ Building the modpack..."
           ./tcli/tcli build
 
