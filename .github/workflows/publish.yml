@@ -55,10 +55,10 @@ jobs:
 
           echo "✅ Validation passed! Ready to publish."
 
-      - name: Build Modpack
+      - name: Build Modpack Zip
         run: |
-          echo "🏗️ Building the modpack..."
-          ./tcli/tcli build
+          mkdir -p builds
+          zip -r "builds/ElRaphik-ElRaphik_Modpack-${GITHUB_REF_NAME}.zip" manifest.json icon.png README.md CHANGELOG.md thunderstore.toml
 
       - name: Publish Modpack (only on automatic call)
         if: env.IS_MANUAL == 'false'
@@ -66,7 +66,7 @@ jobs:
           THUNDERSTORE_TOKEN: ${{ secrets.THUNDERSTORE_TOKEN }}
         run: |
           echo "🚀 Publishing to Thunderstore..."
-          ./tcli/tcli publish --token "$THUNDERSTORE_TOKEN"
+          ./tcli/tcli publish --token "$THUNDERSTORE_TOKEN" --file "builds/ElRaphik-ElRaphik_Modpack-${GITHUB_REF_NAME}.zip"
 
       - name: Publish Summary
         if: env.IS_MANUAL == 'false'
