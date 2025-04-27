@@ -56,11 +56,8 @@ jobs:
           echo "✅ Validation passed! Ready to publish."
 
       - name: Build Modpack
-        env:
-          THUNDERSTORE_TOKEN: ${{ secrets.THUNDERSTORE_TOKEN }}
-          THUNDERSTORE_TEAM: ${{ vars.THUNDERSTORE_TEAM }}
         run: |
-          ./tcli/tcli init --token "$THUNDERSTORE_TOKEN" --community repo --namespace "$THUNDERSTORE_TEAM"
+          ./tcli/tcli init
           echo "🏗️ Building the modpack..."
           ./tcli/tcli build
 
@@ -68,10 +65,9 @@ jobs:
         if: env.IS_MANUAL == 'false'
         env:
           THUNDERSTORE_TOKEN: ${{ secrets.THUNDERSTORE_TOKEN }}
-          THUNDERSTORE_TEAM: ${{ vars.THUNDERSTORE_TEAM }}
         run: |
           echo "🚀 Publishing to Thunderstore..."
-          ./tcli/tcli publish
+          ./tcli/tcli publish --token "$THUNDERSTORE_TOKEN"
 
       - name: Publish Summary
         if: env.IS_MANUAL == 'false'
