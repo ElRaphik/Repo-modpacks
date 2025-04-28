@@ -2,7 +2,7 @@ name: Sync Manifest and Thunderstore TOML
 
 on:
   schedule:
-    - cron: '*/30 * * * *'  # every 30min
+    - cron: '17,47 * * * *'  # every 30min
   workflow_dispatch:      # allow manual run if needed
   push:
     branches: [ main ]
