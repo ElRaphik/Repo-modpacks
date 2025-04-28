@@ -140,7 +140,7 @@ def update_changelog(new_version, added_mods: list, updated_mods, removed_mods, 
     sections_written = False
 
     if added_mods:
-        changelog_entry += f"<details>\n<summary>📦 Added ({len(added_mods)})</summary>\n\n"
+        changelog_entry += f"<details>\n<summary>📦 Added ({len(added_mods)} mods)</summary>\n\n"
         for mod in sorted(added_mods):
             namespace, name, _ = mod.split("-", 2)
             full_mod_name = f"{namespace}-{name}"
@@ -150,7 +150,7 @@ def update_changelog(new_version, added_mods: list, updated_mods, removed_mods, 
         sections_written = True
 
     if updated_mods:
-        changelog_entry += f"<details>\n<summary>🔄 Updated ({len(updated_mods)})</summary>\n\n"
+        changelog_entry += f"<details>\n<summary>🔄 Updated ({len(updated_mods)} mods)</summary>\n\n"
         for mod in sorted(updated_mods):
             parts = mod.split(" (")
             namespace_name = parts[0]
@@ -162,7 +162,7 @@ def update_changelog(new_version, added_mods: list, updated_mods, removed_mods, 
         sections_written = True
 
     if removed_mods:
-        changelog_entry += f"<details>\n<summary>❌ Removed ({len(removed_mods)})</summary>\n\n"
+        changelog_entry += f"<details>\n<summary>❌ Removed ({len(removed_mods)} mods)</summary>\n\n"
         for mod in sorted(removed_mods):
             namespace, name, _ = mod.split("-", 2)
             full_mod_name = f"{namespace}-{name}"
