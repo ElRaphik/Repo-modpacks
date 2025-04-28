@@ -10,6 +10,7 @@ import argparse
 import threading
 import itertools
 from colorama import init, Fore, Style
+import shutil
 
 GITHUB_REPO = os.getenv("GITHUB_REPOSITORY")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
@@ -57,15 +58,38 @@ class Spinner:
         sys.stdout.write("\r" + " " * (len(self.message) + 2) + "\r")
         sys.stdout.flush()
 
+def center_text_if_possible(text):
+    try:
+        terminal_width = shutil.get_terminal_size().columns
+    except:
+        terminal_width = 80  # fallback in case terminal size cannot be detected
+
+    max_line_length = max(len(line) for line in text.split('\n'))
+
+    if terminal_width >= max_line_length:
+        return '\n'.join(line.center(terminal_width) for line in text.split('\n'))
+    else:
+        return text  # no centering if too small
+
 def print_ascii_logo():
     logo = r"""
-    ____        _        _              
-   |  _ \ _   _| |_ ___ | |__   ___ _ __ 
-   | |_) | | | | __/ _ \| '_ \ / _ \ '__|
-   |  __/| |_| | || (_) | |_) |  __/ |   
-   |_|    \__,_|\__\___/|_.__/ \___|_|   
+ _____ _______            _     _ _    _        ______       _____      ______       _____     
+|  ___| | ___ \          | |   (_) |  ( )       | ___ \     |  ___|     | ___ \     |  _  |    
+| |__ | | |_/ /__ _ _ __ | |__  _| | _|/ ___    | |_/ /     | |__       | |_/ /     | | | |    
+|  __|| |    // _` | '_ \| '_ \| | |/ / / __|   |    /      |  __|      |  __/      | | | |    
+| |___| | |\ \ (_| | |_) | | | | |   <  \__ \   | |\ \   _  | |___   _  | |      _  \ \_/ /  _ 
+\____/|_\_| \_\__,_| .__/|_| |_|_|_|\_\ |___/   \_| \_| (_) \____/  (_) \_|     (_)  \___/  (_)
+                   | |                                                           
+___  ___          _|_|               _        _   _           _       _            
+|  \/  |         | |                | |      | | | |         | |     | |           
+| .  . | ___   __| |_ __   __ _  ___| | __   | | | |_ __   __| | __ _| |_ ___ _ __ 
+| |\/| |/ _ \ / _` | '_ \ / _` |/ __| |/ /   | | | | '_ \ / _` |/ _` | __/ _ \ '__|
+| |  | | (_) | (_| | |_) | (_| | (__|   <    | |_| | |_) | (_| | (_| | ||  __/ |   
+\_|  |_/\___/ \__,_| .__/ \__,_|\___|_|\_\    \___/| .__/ \__,_|\__,_|\__\___|_|   
+                   | |                             | |                             
+                   |_|                             |_|                             
     """
-    print(Fore.CYAN + logo, flush=True)
+    print(Fore.CYAN + center_text_if_possible(logo), flush=True)
 
 def announce_mode(dry_run):
     if dry_run:
