@@ -79,15 +79,15 @@ def print_ascii_logo():
 |  __|| |    // _` | '_ \| '_ \| | |/ / / __|   |    /      |  __|      |  __/      | | | |    
 | |___| | |\ \ (_| | |_) | | | | |   <  \__ \   | |\ \   _  | |___   _  | |      _  \ \_/ /  _ 
 \____/|_\_| \_\__,_| .__/|_| |_|_|_|\_\ |___/   \_| \_| (_) \____/  (_) \_|     (_)  \___/  (_)
-                   | |                                                           
-___  ___          _|_|               _        _   _           _       _            
-|  \/  |         | |                | |      | | | |         | |     | |           
-| .  . | ___   __| |_ __   __ _  ___| | __   | | | |_ __   __| | __ _| |_ ___ _ __ 
-| |\/| |/ _ \ / _` | '_ \ / _` |/ __| |/ /   | | | | '_ \ / _` |/ _` | __/ _ \ '__|
-| |  | | (_) | (_| | |_) | (_| | (__|   <    | |_| | |_) | (_| | (_| | ||  __/ |   
-\_|  |_/\___/ \__,_| .__/ \__,_|\___|_|\_\    \___/| .__/ \__,_|\__,_|\__\___|_|   
-                   | |                             | |                             
-                   |_|                             |_|                             
+                   | |                                                                         
+___  ___          _|_|               _        _   _           _       _                        
+|  \/  |         | |                | |      | | | |         | |     | |                       
+| .  . | ___   __| |_ __   __ _  ___| | __   | | | |_ __   __| | __ _| |_ ___ _ __             
+| |\/| |/ _ \ / _` | '_ \ / _` |/ __| |/ /   | | | | '_ \ / _` |/ _` | __/ _ \ '__|            
+| |  | | (_) | (_| | |_) | (_| | (__|   <    | |_| | |_) | (_| | (_| | ||  __/ |               
+\_|  |_/\___/ \__,_| .__/ \__,_|\___|_|\_\    \___/| .__/ \__,_|\__,_|\__\___|_|               
+                   | |                             | |                                         
+                   |_|                             |_|                                         
     """
     print(Fore.CYAN + center_text_if_possible(logo), flush=True)
 
@@ -104,6 +104,7 @@ def parse_args():
     parser.add_argument("--force", action="store_true", default=os.getenv("FORCE", "false").lower() == "true", help="Force version bump even if nothing changed")
     parser.add_argument("--verbose", action="store_true", default=os.getenv("VERBOSE", "false").lower() == "true", help="More verbose output")
     parser.add_argument("--no-issue", action="store_true", default=os.getenv("NO_ISSUE", "false").lower() == "true", help="Do not create GitHub issues for missing dependencies")
+    parser.add_argument("--major-upgrade", action="store_true", default=os.getenv("MAJOR_UPGRADE", "false").lower() == "true", help="Force a major version bump (resets minor and patch)")
     parser.add_argument("--max-retries", type=int, default=int(os.getenv("THUNDERSTORE_MAX_RETRIES", 3)), help="Max retries for Thunderstore API requests")
     parser.add_argument("--retry-delay", type=int, default=int(os.getenv("THUNDERSTORE_RETRY_DELAY", 5)), help="Delay between retries for Thunderstore API requests (seconds)")
     parser.add_argument("--timeout-time", type=int, default=int(os.getenv("THUNDERSTORE_TIMEOUT_TIME", 10)), help="Timeout for Thunderstore API requests (seconds)")
@@ -226,12 +227,53 @@ def save_snapshot(path, dependencies, dry_run=False):
     with open(path, 'w') as f:
         json.dump(dependencies, f, indent=4)
 
-def bump_patch(ver_str):
-    if ver_str == "": return "1.0.0"
-    parsed_version = version.parse(ver_str)
+def color_bumped_version(old_version, new_version):
+    old_parts = old_version.split(".")
+    new_parts = new_version.split(".")
+    
+    result = []
+    bumped = False
+
+    for i in range(3):
+        if not bumped and old_parts[i] != new_parts[i]:
+            if i == 0:
+                result.append(Fore.RED + new_parts[i])
+            elif i == 1:
+                result.append(Fore.YELLOW + new_parts[i])
+            elif i == 2:
+                result.append(Fore.GREEN + new_parts[i])
+            bumped = True
+        else:
+            result.append(new_parts[i])
+
+    return ".".join(result)
+
+def bump_version(current_version, added_mods, updated_mods, removed_mods, force_major_upgrade=False):
+    if current_version == "":
+        return "1.0.0"
+
+    parsed_version = version.parse(current_version)
     if not isinstance(parsed_version, version.Version):
-        raise ValueError(f"Invalid version format: {ver_str}")
-    return f"{parsed_version.major}.{parsed_version.minor}.{parsed_version.micro + 1}"
+        raise ValueError(f"Invalid version format: {current_version}")
+
+    major = parsed_version.major
+    minor = parsed_version.minor
+    patch = parsed_version.micro
+
+    if force_major_upgrade:
+        major += 1
+        minor = 0
+        patch = 0
+    elif added_mods or removed_mods:
+        minor += 1
+        patch = 0
+    elif updated_mods:
+        patch += 1
+    else:
+        # No change needed if no mods at all, but return current
+        pass
+
+    return f"{major}.{minor}.{patch}"
 
 def load_manifest(path):
     with open(path, 'r') as f:
@@ -387,12 +429,20 @@ def main(args):
     if updated or args.force:
         manifest["dependencies"] = sorted(new_dependencies)
 
-        current_version = manifest.get("version_number", "")
-        new_version = bump_patch(current_version)
+        current_version = manifest.get("version_number", "1.0.0")
+        new_version = bump_version(
+            current_version,
+            added_mods=added_mods,
+            updated_mods=updated,
+            removed_mods=removed_mods,
+            force_major_upgrade=args.major_upgrade
+            )
+        
         manifest["version_number"] = new_version
-
         save_manifest(MANIFEST_PATH, manifest, dry_run=args.dry_run)
-        log_info(f"Manifest updated. Version bumped to v{new_version}")
+
+        colored_new_version = color_bumped_version(current_version, new_version)
+        log_info(f"Manifest updated. Version bumped to v{colored_new_version}")
 
         save_snapshot(SNAPSHOT_PATH, new_dependencies, dry_run=args.dry_run)
         write_version_txt(new_version, dry_run=args.dry_run)
