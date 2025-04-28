@@ -8,7 +8,7 @@ from datetime import date
 GITHUB_REPO = os.getenv("GITHUB_REPOSITORY")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
-THUNDERSTORE_API = "https://thunderstore.io/api/experimental/package/"
+THUNDERSTORE_API = "https://thunderstore.io/c/repo/api/v1/package/"
 MANIFEST_PATH = "manifest.json"
 SNAPSHOT_PATH = ".dependencies_snapshot.json"
 
@@ -56,8 +56,6 @@ def save_snapshot(path, dependencies):
         json.dump(dependencies, f, indent=4)
 
 def bump_patch(ver_str):
-    if ver_str == "":
-        return "1.0.0"
     parsed_version = version.parse(ver_str)
     if not isinstance(parsed_version, version.Version):
         raise ValueError(f"Invalid version format: {ver_str}")
@@ -71,14 +69,21 @@ def save_manifest(path, data):
     with open(path, 'w') as f:
         json.dump(data, f, indent=4)
 
-def get_latest_version(namespace, name):
-    url = f"{THUNDERSTORE_API}{namespace}/{name}/"
-    resp = requests.get(url)
-    if resp.status_code == 404:
-        return None
+def load_thunderstore_packages():
+    print("Fetching Thunderstore packages...")
+    resp = requests.get(THUNDERSTORE_API)
     resp.raise_for_status()
-    package_data = resp.json()
-    return package_data['latest']['version_number']
+    packages = resp.json()
+
+    lookup = {}
+    for package in packages:
+        full_name = package.get("full_name")
+        versions = package.get("versions", [])
+        if full_name and versions:
+            lookup[full_name] = versions[0]["version_number"]
+
+    print(f"Loaded {len(lookup)} packages from Thunderstore.")
+    return lookup
 
 def create_github_issue(mod_full_name):
     if not GITHUB_TOKEN or not GITHUB_REPO:
@@ -109,15 +114,18 @@ def main():
     added_mods = []
     removed_mods = []
 
+    thunderstore_lookup = load_thunderstore_packages()
+
     for dep in dependencies:
         try:
             namespace, name, current_version = dep.split("-")
+            full_mod_name = f"{namespace}-{name}"
         except ValueError:
             print(f"Skipping malformed dependency: {dep}")
             new_dependencies.append(dep)
             continue
 
-        latest = get_latest_version(namespace, name)
+        latest = thunderstore_lookup.get(full_mod_name)
 
         if latest is None:
             print(f"Dependency not found: {dep}")
@@ -155,7 +163,7 @@ def main():
     if updated:
         manifest["dependencies"] = new_dependencies
 
-        current_version = manifest.get("version_number", "")
+        current_version = manifest.get("version_number", "1.0.0")
         new_version = bump_patch(current_version)
         manifest["version_number"] = new_version
 
