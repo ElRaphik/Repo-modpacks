@@ -118,11 +118,11 @@ def safe_run_subprocess(cmd):
         log_error(f"Failed command: {' '.join(cmd)}")
         sys.exit(1)
 
-def banner(title, filler, color=Fore.WHITE, width=80):
+def banner(title, filler, color=Fore.WHITE, width=80, endline=False):
     print("\n" + color + "="*width, flush=True)
     print(f"{color}{title}\n", flush=True)
-    print(color + filler, flush=True)
-    print(color + "=" * width + Style.RESET_ALL, flush=True)
+    print(filler, flush=True)
+    if endline: print(color + "=" * width + Style.RESET_ALL, flush=True)
 
 def write_version_txt(version, dry_run=False):
     if dry_run:
@@ -198,6 +198,8 @@ def update_changelog(new_version, added_mods: list, updated_mods, removed_mods, 
 
     if not sections_written:
         changelog_entry += "No dependency changes in this release.\n\n"
+
+    changelog_entry = changelog_entry.rstrip("\n") + "\n\n"
 
     if dry_run:
         banner("[Dry Run] Would update CHANGELOG.md with:", changelog_entry)
@@ -450,12 +452,28 @@ def main(args):
         if not args.dry_run:
             safe_run_subprocess(["python", "generate_thunderstore_toml.py"])
 
-        update_changelog(new_version, added_mods, updated_mods, removed_mods, thunderstore_lookup, dry_run=args.dry_run)
+
+        # Prepare set of added mod names (namespace-name only)
+        added_mods_basenames = set("-".join(mod.split("-")[:2]) for mod in added_mods)
+
+        # Filter updated_mods to exclude any that were just added
+        filtered_updated_mods = []
+        for mod in updated_mods:
+            namespace_name = mod.split(" (")[0]  # Extract namespace-name from update string
+            if namespace_name not in added_mods_basenames:
+                filtered_updated_mods.append(mod)
+
+        update_changelog(new_version, added_mods, filtered_updated_mods, removed_mods, thunderstore_lookup, dry_run=args.dry_run)
     else:
         log_info("All dependencies are up to date. No changes, skipping thunderstore.toml regeneration.")
 
     elapsed_time = time.time() - start_time
-    banner("✅ Done", f"Update process completed in {elapsed_time:.2f} seconds.", color=Fore.GREEN)
+    banner(
+        "✅ Done",
+        f"Update process completed in {elapsed_time:.2f} seconds.\n{Fore.BLUE}Summary: 📦 {len(added_mods)} added, 🔄 {len(filtered_updated_mods)} updated, ❌ {len(removed_mods)} removed.",
+        color=Fore.GREEN,
+        endline=True
+        )
 
 
 if __name__ == "__main__":
