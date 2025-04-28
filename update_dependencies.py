@@ -57,6 +57,21 @@ class Spinner:
         sys.stdout.write("\r" + " " * (len(self.message) + 2) + "\r")
         sys.stdout.flush()
 
+def print_ascii_logo():
+    logo = r"""
+    ____        _        _              
+   |  _ \ _   _| |_ ___ | |__   ___ _ __ 
+   | |_) | | | | __/ _ \| '_ \ / _ \ '__|
+   |  __/| |_| | || (_) | |_) |  __/ |   
+   |_|    \__,_|\__\___/|_.__/ \___|_|   
+    """
+    print(Fore.CYAN + logo, flush=True)
+
+def announce_mode(dry_run):
+    if dry_run:
+        print(Fore.YELLOW + "[Mode] Running in DRY-RUN mode. No changes will be saved.", flush=True)
+    else:
+        print(Fore.GREEN + "[Mode] Running in REAL mode. Changes will be applied.", flush=True)
 
 
 def parse_args():
@@ -94,23 +109,29 @@ def write_version_txt(version, dry_run=False):
 def log_info(message, spinner=None):
     if spinner:
         spinner.stop()
+        spinner = Spinner(message=spinner.message, delay=spinner.delay)
     print(Fore.BLUE + message, flush=True)
     if spinner:
         spinner.start()
+        return spinner
 
 def log_warning(message, spinner=None):
     if spinner:
         spinner.stop()
+        spinner = Spinner(message=spinner.message, delay=spinner.delay)
     print(Fore.YELLOW + message, flush=True)
     if spinner:
         spinner.start()
+        return spinner
 
 def log_error(message, spinner=None):
     if spinner:
         spinner.stop()
+        spinner = Spinner(message=spinner.message, delay=spinner.delay)
     print(Fore.RED + message, flush=True)
     if spinner:
         spinner.start()
+        return spinner
 
 def update_changelog(new_version, added_mods: list, updated_mods, removed_mods, thunderstore_lookup, dry_run=False):
     today = date.today().isoformat()
@@ -125,7 +146,7 @@ def update_changelog(new_version, added_mods: list, updated_mods, removed_mods, 
             full_mod_name = f"{namespace}-{name}"
             package_url = thunderstore_lookup.get(full_mod_name).get("package_url")
             changelog_entry += f"- [{namespace}-{name}]({package_url})\n"
-        changelog_entry += "</details>\n"
+        changelog_entry += "</details>\n\n"
         sections_written = True
 
     if updated_mods:
@@ -137,7 +158,7 @@ def update_changelog(new_version, added_mods: list, updated_mods, removed_mods, 
             full_mod_name = f"{namespace}-{name}"
             package_url = thunderstore_lookup.get(full_mod_name).get("package_url")
             changelog_entry += f"- [{namespace}-{name}]({package_url}) ({parts[1]}\n" # Is correct because parts[1] already includes the closing )
-        changelog_entry += "</details>\n"
+        changelog_entry += "</details>\n\n"
         sections_written = True
 
     if removed_mods:
@@ -147,7 +168,7 @@ def update_changelog(new_version, added_mods: list, updated_mods, removed_mods, 
             full_mod_name = f"{namespace}-{name}"
             package_url = thunderstore_lookup.get(full_mod_name).get("package_url")
             changelog_entry += f"- [{namespace}-{name}]({package_url})\n"
-        changelog_entry += "</details>\n"
+        changelog_entry += "</details>\n\n"
         sections_written = True
 
     if not sections_written:
@@ -221,15 +242,15 @@ def fetch_thunderstore_packages(max_retries, retry_delay, timeout_time, verbose=
                             "package_url": package_url
                         }
                 if verbose:
-                    log_info(f"Loaded {len(lookup)} packages from Thunderstore.")
+                    spinner = log_info(f"Loaded {len(lookup)} packages from Thunderstore.", spinner=spinner)
                 return lookup
             except requests.RequestException as e:
                 log_warning(f"Attempt {attempt} failed: {e}")
                 if attempt < max_retries:
-                    log_info(f"Retrying in {retry_delay} seconds...")
+                    spinner = log_info(f"Retrying in {retry_delay} seconds...", spinner=spinner)
                     time.sleep(retry_delay)
                 else:
-                    log_error("❌ Failed to fetch Thunderstore packages after multiple attempts.")
+                    spinner = log_error("❌ Failed to fetch Thunderstore packages after multiple attempts.", spinner=spinner)
                     sys.exit(1)
     finally:
         spinner.stop()
@@ -265,24 +286,25 @@ def process_dependencies(dependencies, thunderstore_lookup, args):
 
     try:
         for dep in dependencies:
+            if args.verbose: spinner = log_info(f"Treating dependency: {dep}", spinner=spinner)
             try:
                 namespace, name, current_version = dep.split("-")
                 full_mod_name = f"{namespace}-{name}"
             except ValueError:
-                log_warning(f"Skipping malformed dependency: {dep}")
+                spinner = log_warning(f"Skipping malformed dependency: {dep}", spinner=spinner)
                 new_dependencies.append(dep)
                 continue
 
             latest = thunderstore_lookup.get(full_mod_name).get("version")
 
             if latest is None:
-                log_warning(f"Dependency not found: {dep}")
+                spinner = log_warning(f"Dependency not found: {dep}", spinner=spinner)
                 create_github_issue(dep, no_issue=args.no_issue)
                 new_dependencies.append(dep)
                 continue
 
             if version.parse(latest) > version.parse(current_version):
-                log_info(f"Updating {dep} to version {latest}")
+                spinner = log_info(f"Updating {dep} to version {latest}", spinner=spinner)
                 updated = True
                 new_dep = f"{namespace}-{name}-{latest}"
                 new_dependencies.append(new_dep)
@@ -297,6 +319,9 @@ def process_dependencies(dependencies, thunderstore_lookup, args):
 def main(args):
     start_time = time.time()
     init(autoreset=True)
+
+    print_ascii_logo()
+    announce_mode(args.dry_run)
 
     try:
         manifest = load_manifest(MANIFEST_PATH)
