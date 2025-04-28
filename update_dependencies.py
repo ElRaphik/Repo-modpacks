@@ -428,6 +428,7 @@ def main(args):
         for mod in removed:
             removed_mods.append(mod)
 
+    filtered_updated_mods = []
     if updated or args.force:
         manifest["dependencies"] = sorted(new_dependencies)
 
@@ -457,7 +458,6 @@ def main(args):
         added_mods_basenames = set("-".join(mod.split("-")[:2]) for mod in added_mods)
 
         # Filter updated_mods to exclude any that were just added
-        filtered_updated_mods = []
         for mod in updated_mods:
             namespace_name = mod.split(" (")[0]  # Extract namespace-name from update string
             if namespace_name not in added_mods_basenames:
