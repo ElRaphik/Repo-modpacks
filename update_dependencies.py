@@ -21,10 +21,6 @@ THUNDERSTORE_API = os.getenv(
 MANIFEST_PATH = "manifest.json"
 SNAPSHOT_PATH = ".dependencies_snapshot.json"
 
-MAX_RETRIES = int(os.getenv("THUNDERSTORE_MAX_RETRIES", 3))
-RETRY_DELAY = int(os.getenv("THUNDERSTORE_RETRY_DELAY", 5))
-TIMEOUT_TIME = int(os.getenv("THUNDERSTORE_TIMEOUT_TIME", 10))
-
 class Spinner:
     def __init__(self, message="Processing... ", delay=0.1):
         self.spinner = itertools.cycle(['⠋', '⠙', '⠚', '⠞', '⠖', '⠦', '⠴', '⠲', '⠳', '⠓'])
@@ -159,34 +155,29 @@ def save_manifest(path, data, dry_run=False):
     with open(path, 'w') as f:
         json.dump(data, f, indent=4)
 
-def load_thunderstore_packages(verbose=False):
-    if verbose:
-        log_info("Fetching Thunderstore packages...")
+def fetch_thunderstore_packages(max_retries, retry_delay, timeout_time, verbose=False):
     spinner = Spinner(message="🔄 Fetching Thunderstore packages... ")
     spinner.start()
     try:
-        for attempt in range(1, MAX_RETRIES + 1):
+        for attempt in range(1, max_retries + 1):
             try:
-                resp = requests.get(THUNDERSTORE_API, headers={"User-Agent": "ElRaphik-Repo-Modpack-Updater/1.0"}, timeout=TIMEOUT_TIME)
+                resp = requests.get(THUNDERSTORE_API, headers={"User-Agent": "ElRaphik-Repo-Modpack-Updater/1.0"}, timeout=timeout_time)
                 resp.raise_for_status()
                 packages = resp.json()
-
                 lookup = {}
                 for package in packages:
                     full_name = package.get("full_name")
                     versions = package.get("versions", [])
                     if full_name and versions:
                         lookup[full_name] = versions[0]["version_number"]
-
                 if verbose:
                     log_info(f"Loaded {len(lookup)} packages from Thunderstore.")
                 return lookup
-
             except requests.RequestException as e:
                 log_warning(f"Attempt {attempt} failed: {e}")
-                if attempt < MAX_RETRIES:
-                    log_info(f"Retrying in {RETRY_DELAY} seconds...")
-                    time.sleep(RETRY_DELAY)
+                if attempt < max_retries:
+                    log_info(f"Retrying in {retry_delay} seconds...")
+                    time.sleep(retry_delay)
                 else:
                     log_error("❌ Failed to fetch Thunderstore packages after multiple attempts.")
                     sys.exit(1)
@@ -233,7 +224,12 @@ def main(args):
     added_mods = []
     removed_mods = []
 
-    thunderstore_lookup = load_thunderstore_packages(verbose=args.verbose)
+    thunderstore_lookup = fetch_thunderstore_packages(
+        max_retries=args.max_retries,
+        retry_delay=args.retry_delay,
+        timeout_time=args.timeout_time,
+        verbose=args.verbose
+    )
 
     spinner = Spinner(message="🔄 Processing dependencies... ")
     spinner.start()
@@ -317,12 +313,14 @@ def main(args):
 
 
 if __name__ == "__main__":
-
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dry-run", action="store_true", help="Run without making any file changes")
-    parser.add_argument("--force", action="store_true", help="Force version bump even if nothing changed")
-    parser.add_argument("--verbose", action="store_true", help="More verbose output")
-    parser.add_argument("--no-issue", action="store_true", help="Do not create GitHub issues for missing dependencies")
+    parser.add_argument("--dry-run", action="store_true", default=os.getenv("DRY_RUN", "false").lower() == "true", help="Run without making any file changes")
+    parser.add_argument("--force", action="store_true", default=os.getenv("FORCE", "false").lower() == "true", help="Force version bump even if nothing changed")
+    parser.add_argument("--verbose", action="store_true", default=os.getenv("VERBOSE", "false").lower() == "true", help="More verbose output")
+    parser.add_argument("--no-issue", action="store_true", default=os.getenv("NO_ISSUE", "false").lower() == "true", help="Do not create GitHub issues for missing dependencies")
+    parser.add_argument("--max-retries", type=int, default=int(os.getenv("THUNDERSTORE_MAX_RETRIES", 3)), help="Max retries for Thunderstore API requests")
+    parser.add_argument("--retry-delay", type=int, default=int(os.getenv("THUNDERSTORE_RETRY_DELAY", 5)), help="Delay between retries for Thunderstore API requests (seconds)")
+    parser.add_argument("--timeout-time", type=int, default=int(os.getenv("THUNDERSTORE_TIMEOUT_TIME", 10)), help="Timeout for Thunderstore API requests (seconds)")
     args = parser.parse_args()
 
     try:
