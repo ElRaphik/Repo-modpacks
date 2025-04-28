@@ -4,6 +4,8 @@ import requests
 from packaging import version
 import subprocess
 from datetime import date
+import sys
+import time
 
 GITHUB_REPO = os.getenv("GITHUB_REPOSITORY")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
@@ -11,6 +13,10 @@ GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 THUNDERSTORE_API = "https://thunderstore.io/c/repo/api/v1/package/"
 MANIFEST_PATH = "manifest.json"
 SNAPSHOT_PATH = ".dependencies_snapshot.json"
+
+MAX_RETRIES = int(os.getenv("THUNDERSTORE_MAX_RETRIES", 3))
+RETRY_DELAY = int(os.getenv("THUNDERSTORE_RETRY_DELAY", 5))
+TIMEOUT_TIME = int(os.getenv("THUNDERSTORE_TIMEOUT_TIME", 10))
 
 def update_changelog(new_version, added_mods, updated_mods, removed_mods):
     today = date.today().isoformat()
@@ -56,6 +62,7 @@ def save_snapshot(path, dependencies):
         json.dump(dependencies, f, indent=4)
 
 def bump_patch(ver_str):
+    if ver_str == "": return "1.0.0"
     parsed_version = version.parse(ver_str)
     if not isinstance(parsed_version, version.Version):
         raise ValueError(f"Invalid version format: {ver_str}")
@@ -66,24 +73,37 @@ def load_manifest(path):
         return json.load(f)
 
 def save_manifest(path, data):
+    unique_dependencies = list(dict.fromkeys(sorted(data.get("dependencies", []))))
+    data["dependencies"] = unique_dependencies
     with open(path, 'w') as f:
         json.dump(data, f, indent=4)
 
 def load_thunderstore_packages():
     print("Fetching Thunderstore packages...")
-    resp = requests.get(THUNDERSTORE_API)
-    resp.raise_for_status()
-    packages = resp.json()
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            resp = requests.get(THUNDERSTORE_API, headers={"User-Agent": "ElRaphik-Repo-Modpack-Updater/1.0"}, timeout=TIMEOUT_TIME)
+            resp.raise_for_status()
+            packages = resp.json()
 
-    lookup = {}
-    for package in packages:
-        full_name = package.get("full_name")
-        versions = package.get("versions", [])
-        if full_name and versions:
-            lookup[full_name] = versions[0]["version_number"]
+            lookup = {}
+            for package in packages:
+                full_name = package.get("full_name")
+                versions = package.get("versions", [])
+                if full_name and versions:
+                    lookup[full_name] = versions[0]["version_number"]
 
-    print(f"Loaded {len(lookup)} packages from Thunderstore.")
-    return lookup
+            print(f"Loaded {len(lookup)} packages from Thunderstore.")
+            return lookup
+
+        except requests.RequestException as e:
+            print(f"Attempt {attempt} failed: {e}")
+            if attempt < MAX_RETRIES:
+                print(f"Retrying in {RETRY_DELAY} seconds...")
+                time.sleep(RETRY_DELAY)
+            else:
+                print(f"❌ Failed to fetch Thunderstore packages after {MAX_RETRIES} attempts.")
+                sys.exit(1)
 
 def create_github_issue(mod_full_name):
     if not GITHUB_TOKEN or not GITHUB_REPO:
@@ -163,7 +183,7 @@ def main():
     if updated:
         manifest["dependencies"] = new_dependencies
 
-        current_version = manifest.get("version_number", "1.0.0")
+        current_version = manifest.get("version_number", "")
         new_version = bump_patch(current_version)
         manifest["version_number"] = new_version
 
