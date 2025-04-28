@@ -27,7 +27,7 @@ TIMEOUT_TIME = int(os.getenv("THUNDERSTORE_TIMEOUT_TIME", 10))
 
 class Spinner:
     def __init__(self, message="Processing... ", delay=0.1):
-        self.spinner = itertools.cycle(['-', '\\', '|', '/'])
+        self.spinner = itertools.cycle(['⠋', '⠙', '⠚', '⠞', '⠖', '⠦', '⠴', '⠲', '⠳', '⠓'])
         self.stop_running = False
         self.message = message
         self.delay = delay
