@@ -7,6 +7,8 @@ from datetime import date
 import sys
 import time
 import argparse
+import threading
+import itertools
 from colorama import init, Fore, Style
 
 GITHUB_REPO = os.getenv("GITHUB_REPOSITORY")
@@ -23,20 +25,43 @@ MAX_RETRIES = int(os.getenv("THUNDERSTORE_MAX_RETRIES", 3))
 RETRY_DELAY = int(os.getenv("THUNDERSTORE_RETRY_DELAY", 5))
 TIMEOUT_TIME = int(os.getenv("THUNDERSTORE_TIMEOUT_TIME", 10))
 
-def banner(title, filler, color=Fore.WHITE, width=80): 
-    print("\n"+ color + "="*width)
-    print(f"{color}{title}\n")
-    print(color + filler)
-    print(color + "=" * width + Style.RESET_ALL)
+class Spinner:
+    def __init__(self, message="Processing... ", delay=0.1):
+        self.spinner = itertools.cycle(['-', '\\', '|', '/'])
+        self.stop_running = False
+        self.message = message
+        self.delay = delay
+        self.thread = threading.Thread(target=self.spin)
+
+    def spin(self):
+        while not self.stop_running:
+            sys.stdout.write(f"\r{self.message}{next(self.spinner)}")
+            sys.stdout.flush()
+            time.sleep(self.delay)
+
+    def start(self):
+        self.thread.start()
+
+    def stop(self):
+        self.stop_running = True
+        self.thread.join()
+        sys.stdout.write("\r" + " " * (len(self.message) + 2) + "\r")
+        sys.stdout.flush()
+
+def banner(title, filler, color=Fore.WHITE, width=80):
+    print("\n" + color + "="*width, flush=True)
+    print(f"{color}{title}\n", flush=True)
+    print(color + filler, flush=True)
+    print(color + "=" * width + Style.RESET_ALL, flush=True)
 
 def log_info(message):
-    print(Fore.BLUE + message)
+    print(Fore.BLUE + message, flush=True)
 
 def log_warning(message):
-    print(Fore.YELLOW + message)
+    print(Fore.YELLOW + message, flush=True)
 
 def log_error(message):
-    print(Fore.RED + message)
+    print(Fore.RED + message, flush=True)
 
 def update_changelog(new_version, added_mods, updated_mods, removed_mods, dry_run=False):
     today = date.today().isoformat()
@@ -111,31 +136,36 @@ def save_manifest(path, data, dry_run=False):
 def load_thunderstore_packages(verbose=False):
     if verbose:
         log_info("Fetching Thunderstore packages...")
-    for attempt in range(1, MAX_RETRIES + 1):
-        try:
-            resp = requests.get(THUNDERSTORE_API, headers={"User-Agent": "ElRaphik-Repo-Modpack-Updater/1.0"}, timeout=TIMEOUT_TIME)
-            resp.raise_for_status()
-            packages = resp.json()
+    spinner = Spinner(message="🔄 Fetching Thunderstore packages... ")
+    spinner.start()
+    try:
+        for attempt in range(1, MAX_RETRIES + 1):
+            try:
+                resp = requests.get(THUNDERSTORE_API, headers={"User-Agent": "ElRaphik-Repo-Modpack-Updater/1.0"}, timeout=TIMEOUT_TIME)
+                resp.raise_for_status()
+                packages = resp.json()
 
-            lookup = {}
-            for package in packages:
-                full_name = package.get("full_name")
-                versions = package.get("versions", [])
-                if full_name and versions:
-                    lookup[full_name] = versions[0]["version_number"]
+                lookup = {}
+                for package in packages:
+                    full_name = package.get("full_name")
+                    versions = package.get("versions", [])
+                    if full_name and versions:
+                        lookup[full_name] = versions[0]["version_number"]
 
-            if verbose:
-                log_info(f"Loaded {len(lookup)} packages from Thunderstore.")
-            return lookup
+                if verbose:
+                    log_info(f"Loaded {len(lookup)} packages from Thunderstore.")
+                return lookup
 
-        except requests.RequestException as e:
-            log_warning(f"Attempt {attempt} failed: {e}")
-            if attempt < MAX_RETRIES:
-                log_info(f"Retrying in {RETRY_DELAY} seconds...")
-                time.sleep(RETRY_DELAY)
-            else:
-                log_error("❌ Failed to fetch Thunderstore packages after multiple attempts.")
-                sys.exit(1)
+            except requests.RequestException as e:
+                log_warning(f"Attempt {attempt} failed: {e}")
+                if attempt < MAX_RETRIES:
+                    log_info(f"Retrying in {RETRY_DELAY} seconds...")
+                    time.sleep(RETRY_DELAY)
+                else:
+                    log_error("❌ Failed to fetch Thunderstore packages after multiple attempts.")
+                    sys.exit(1)
+    finally:
+        spinner.stop()
 
 def create_github_issue(mod_full_name):
     if not GITHUB_TOKEN or not GITHUB_REPO:
@@ -170,7 +200,7 @@ def main():
     except json.JSONDecodeError:
         log_error(f"❌ Error: {MANIFEST_PATH} is not valid JSON. Please fix it before continuing.")
         sys.exit(1)
-    
+
     dependencies = manifest.get("dependencies", [])
 
     updated = False
@@ -182,31 +212,37 @@ def main():
 
     thunderstore_lookup = load_thunderstore_packages(verbose=args.verbose)
 
-    for dep in dependencies:
-        try:
-            namespace, name, current_version = dep.split("-")
-            full_mod_name = f"{namespace}-{name}"
-        except ValueError:
-            log_warning(f"Skipping malformed dependency: {dep}")
-            new_dependencies.append(dep)
-            continue
+    spinner = Spinner(message="🔄 Processing dependencies... ")
+    spinner.start()
 
-        latest = thunderstore_lookup.get(full_mod_name)
+    try:
+        for dep in dependencies:
+            try:
+                namespace, name, current_version = dep.split("-")
+                full_mod_name = f"{namespace}-{name}"
+            except ValueError:
+                log_warning(f"Skipping malformed dependency: {dep}")
+                new_dependencies.append(dep)
+                continue
 
-        if latest is None:
-            log_warning(f"Dependency not found: {dep}")
-            create_github_issue(dep)
-            new_dependencies.append(dep)
-            continue
+            latest = thunderstore_lookup.get(full_mod_name)
 
-        if version.parse(latest) > version.parse(current_version):
-            log_info(f"Updating {dep} to version {latest}")
-            updated = True
-            new_dep = f"{namespace}-{name}-{latest}"
-            new_dependencies.append(new_dep)
-            updated_mods.append(f"{namespace}-{name} ({current_version} → {latest})")
-        else:
-            new_dependencies.append(dep)
+            if latest is None:
+                log_warning(f"Dependency not found: {dep}")
+                create_github_issue(dep)
+                new_dependencies.append(dep)
+                continue
+
+            if version.parse(latest) > version.parse(current_version):
+                log_info(f"Updating {dep} to version {latest}")
+                updated = True
+                new_dep = f"{namespace}-{name}-{latest}"
+                new_dependencies.append(new_dep)
+                updated_mods.append(f"{namespace}-{name} ({current_version} → {latest})")
+            else:
+                new_dependencies.append(dep)
+    finally:
+        spinner.stop()
 
     snapshot_dependencies = load_snapshot(SNAPSHOT_PATH)
 
@@ -252,8 +288,13 @@ def main():
         update_changelog(new_version, added_mods, updated_mods, removed_mods, dry_run=args.dry_run)
     else:
         log_info("All dependencies are up to date. No changes, skipping thunderstore.toml regeneration.")
+
     elapsed_time = time.time() - start_time
     log_info(f"⏱️ Update process completed in {elapsed_time:.2f} seconds.")
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        log_error(f"❌ Unexpected error occurred: {e}")
+        sys.exit(1)
