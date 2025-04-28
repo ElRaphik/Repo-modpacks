@@ -118,7 +118,7 @@ def safe_run_subprocess(cmd):
         log_error(f"Failed command: {' '.join(cmd)}")
         sys.exit(1)
 
-def banner(title, filler, color=Fore.WHITE, width=80, endline=False):
+def banner(title, filler="", color=Fore.WHITE, width=80, endline=False):
     print("\n" + color + "="*width, flush=True)
     print(f"{color}{title}\n", flush=True)
     print(filler, flush=True)
@@ -202,7 +202,7 @@ def update_changelog(new_version, added_mods: list, updated_mods, removed_mods, 
     changelog_entry = changelog_entry.rstrip("\n") + "\n\n"
 
     if dry_run:
-        banner("[Dry Run] Would update CHANGELOG.md with:", changelog_entry)
+        banner("[Dry Run] Would update CHANGELOG.md with:", filler=changelog_entry)
         return
 
     try:
@@ -431,7 +431,7 @@ def main(args):
     if updated or args.force:
         manifest["dependencies"] = sorted(new_dependencies)
 
-        current_version = manifest.get("version_number", "1.0.0")
+        current_version = manifest.get("version_number", "")
         new_version = bump_version(
             current_version,
             added_mods=added_mods,
@@ -470,7 +470,7 @@ def main(args):
     elapsed_time = time.time() - start_time
     banner(
         "✅ Done",
-        f"Update process completed in {elapsed_time:.2f} seconds.\n{Fore.BLUE}Summary: 📦 {len(added_mods)} added, 🔄 {len(filtered_updated_mods)} updated, ❌ {len(removed_mods)} removed.",
+        filler=f"Update process completed in {elapsed_time:.2f} seconds.\n{Fore.BLUE}Summary: 📦 {len(added_mods)} added, 🔄 {len(filtered_updated_mods)} updated, ❌ {len(removed_mods)} removed.",
         color=Fore.GREEN,
         endline=True
         )
