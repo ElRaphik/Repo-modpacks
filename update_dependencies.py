@@ -57,12 +57,39 @@ class Spinner:
         sys.stdout.write("\r" + " " * (len(self.message) + 2) + "\r")
         sys.stdout.flush()
 
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dry-run", action="store_true", default=os.getenv("DRY_RUN", "false").lower() == "true", help="Run without making any file changes")
+    parser.add_argument("--force", action="store_true", default=os.getenv("FORCE", "false").lower() == "true", help="Force version bump even if nothing changed")
+    parser.add_argument("--verbose", action="store_true", default=os.getenv("VERBOSE", "false").lower() == "true", help="More verbose output")
+    parser.add_argument("--no-issue", action="store_true", default=os.getenv("NO_ISSUE", "false").lower() == "true", help="Do not create GitHub issues for missing dependencies")
+    parser.add_argument("--max-retries", type=int, default=int(os.getenv("THUNDERSTORE_MAX_RETRIES", 3)), help="Max retries for Thunderstore API requests")
+    parser.add_argument("--retry-delay", type=int, default=int(os.getenv("THUNDERSTORE_RETRY_DELAY", 5)), help="Delay between retries for Thunderstore API requests (seconds)")
+    parser.add_argument("--timeout-time", type=int, default=int(os.getenv("THUNDERSTORE_TIMEOUT_TIME", 10)), help="Timeout for Thunderstore API requests (seconds)")
+    return parser.parse_args()
+
+def safe_run_subprocess(cmd):
+    try:
+        subprocess.run(cmd, check=True)
+        log_info(f"Command succeeded: {' '.join(cmd)}")
+    except subprocess.CalledProcessError:
+        log_error(f"Failed command: {' '.join(cmd)}")
+        sys.exit(1)
+
 def banner(title, filler, color=Fore.WHITE, width=80):
     print("\n" + color + "="*width, flush=True)
     print(f"{color}{title}\n", flush=True)
     print(color + filler, flush=True)
     print(color + "=" * width + Style.RESET_ALL, flush=True)
 
+def write_version_txt(version, dry_run=False):
+    if dry_run:
+        log_info("[Dry Run] Would write version.txt")
+        return
+    with open("version.txt", "w") as f:
+        f.write(version)
 
 def log_info(message, spinner=None):
     if spinner:
@@ -205,31 +232,10 @@ def create_github_issue(mod_full_name, no_issue=False):
     if resp.status_code != 201:
         log_error(f"Failed to create issue: {resp.text}")
 
-def main(args):
-    start_time = time.time()
-    init(autoreset=True)
-
-    try:
-        manifest = load_manifest(MANIFEST_PATH)
-    except json.JSONDecodeError:
-        log_error(f"❌ Error: {MANIFEST_PATH} is not valid JSON. Please fix it before continuing.")
-        sys.exit(1)
-
-    dependencies = manifest.get("dependencies", [])
-
+def process_dependencies(dependencies, thunderstore_lookup, args):
     updated = False
     new_dependencies = []
-
     updated_mods = []
-    added_mods = []
-    removed_mods = []
-
-    thunderstore_lookup = fetch_thunderstore_packages(
-        max_retries=args.max_retries,
-        retry_delay=args.retry_delay,
-        timeout_time=args.timeout_time,
-        verbose=args.verbose
-    )
 
     spinner = Spinner(message="🔄 Processing dependencies... ")
     spinner.start()
@@ -263,6 +269,31 @@ def main(args):
     finally:
         spinner.stop()
 
+    return updated, new_dependencies, updated_mods
+
+def main(args):
+    start_time = time.time()
+    init(autoreset=True)
+
+    try:
+        manifest = load_manifest(MANIFEST_PATH)
+    except json.JSONDecodeError:
+        log_error(f"❌ Error: {MANIFEST_PATH} is not valid JSON. Please fix it before continuing.")
+        sys.exit(1)
+
+    dependencies = manifest.get("dependencies", [])
+    added_mods = []
+    removed_mods = []
+
+    thunderstore_lookup = fetch_thunderstore_packages(
+        max_retries=args.max_retries,
+        retry_delay=args.retry_delay,
+        timeout_time=args.timeout_time,
+        verbose=args.verbose
+    )
+
+    updated, new_dependencies, updated_mods = process_dependencies(dependencies, thunderstore_lookup, args)
+
     snapshot_dependencies = load_snapshot(SNAPSHOT_PATH)
 
     if new_dependencies != snapshot_dependencies:
@@ -292,17 +323,10 @@ def main(args):
         log_info(f"Manifest updated. Version bumped to v{new_version}")
 
         save_snapshot(SNAPSHOT_PATH, new_dependencies, dry_run=args.dry_run)
+        write_version_txt(new_version, dry_run=args.dry_run)
 
         if not args.dry_run:
-            with open("version.txt", "w") as f:
-                f.write(new_version)
-
-        if not args.dry_run:
-            try:
-                subprocess.run(["python", "generate_thunderstore_toml.py"], check=True)
-                log_info("thunderstore.toml regenerated successfully.")
-            except subprocess.CalledProcessError:
-                log_error("Failed to regenerate thunderstore.toml.")
+            safe_run_subprocess(["python", "generate_thunderstore_toml.py"])
 
         update_changelog(new_version, added_mods, updated_mods, removed_mods, dry_run=args.dry_run)
     else:
@@ -313,15 +337,7 @@ def main(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--dry-run", action="store_true", default=os.getenv("DRY_RUN", "false").lower() == "true", help="Run without making any file changes")
-    parser.add_argument("--force", action="store_true", default=os.getenv("FORCE", "false").lower() == "true", help="Force version bump even if nothing changed")
-    parser.add_argument("--verbose", action="store_true", default=os.getenv("VERBOSE", "false").lower() == "true", help="More verbose output")
-    parser.add_argument("--no-issue", action="store_true", default=os.getenv("NO_ISSUE", "false").lower() == "true", help="Do not create GitHub issues for missing dependencies")
-    parser.add_argument("--max-retries", type=int, default=int(os.getenv("THUNDERSTORE_MAX_RETRIES", 3)), help="Max retries for Thunderstore API requests")
-    parser.add_argument("--retry-delay", type=int, default=int(os.getenv("THUNDERSTORE_RETRY_DELAY", 5)), help="Delay between retries for Thunderstore API requests (seconds)")
-    parser.add_argument("--timeout-time", type=int, default=int(os.getenv("THUNDERSTORE_TIMEOUT_TIME", 10)), help="Timeout for Thunderstore API requests (seconds)")
-    args = parser.parse_args()
+    args = parse_args()
 
     try:
         main(args)
