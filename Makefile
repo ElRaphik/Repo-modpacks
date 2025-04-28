@@ -1,5 +1,5 @@
-.PHONY: test
+.PHONY: dry-run
 
 # Test dependency updates without modifying files
-test:
-	python3 update_dependencies_test.py
+dry-run:
+	python3 update_dependencies.py --dry-run
