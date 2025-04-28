@@ -193,7 +193,10 @@ def load_thunderstore_packages(verbose=False):
     finally:
         spinner.stop()
 
-def create_github_issue(mod_full_name):
+def create_github_issue(mod_full_name, no_issue=False):
+    if no_issue:
+        log_warning(f"Skipping issue creation for {mod_full_name} due to --no-issue flag.")
+        return
     if not GITHUB_TOKEN or not GITHUB_REPO:
         log_warning("Missing GitHub token or repo. Cannot create issue.")
         return
@@ -219,6 +222,7 @@ def main():
     parser.add_argument("--dry-run", action="store_true", help="Run without making any file changes")
     parser.add_argument("--force", action="store_true", help="Force version bump even if nothing changed")
     parser.add_argument("--verbose", action="store_true", help="More verbose output")
+    parser.add_argument("--no-issue", action="store_true", help="Do not create GitHub issues for missing dependencies")
     args = parser.parse_args()
 
     try:
@@ -255,7 +259,7 @@ def main():
 
             if latest is None:
                 log_warning(f"Dependency not found: {dep}")
-                create_github_issue(dep)
+                create_github_issue(dep, no_issue=args.no_issue)
                 new_dependencies.append(dep)
                 continue
 
