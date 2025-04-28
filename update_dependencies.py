@@ -7,17 +7,36 @@ from datetime import date
 import sys
 import time
 import argparse
+from colorama import init, Fore, Style
 
 GITHUB_REPO = os.getenv("GITHUB_REPOSITORY")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
-THUNDERSTORE_API = "https://thunderstore.io/c/repo/api/v1/package/"
+THUNDERSTORE_API = os.getenv(
+    "THUNDERSTORE_API",
+    "https://thunderstore.io/c/repo/api/v1/package/"
+)
 MANIFEST_PATH = "manifest.json"
 SNAPSHOT_PATH = ".dependencies_snapshot.json"
 
 MAX_RETRIES = int(os.getenv("THUNDERSTORE_MAX_RETRIES", 3))
 RETRY_DELAY = int(os.getenv("THUNDERSTORE_RETRY_DELAY", 5))
 TIMEOUT_TIME = int(os.getenv("THUNDERSTORE_TIMEOUT_TIME", 10))
+
+def banner(title, filler, color=Fore.WHITE, width=80): 
+    print("\n"+ color + "="*width)
+    print(f"{color}{title}\n")
+    print(color + filler)
+    print(color + "=" * width + Style.RESET_ALL)
+
+def log_info(message):
+    print(Fore.BLUE + message)
+
+def log_warning(message):
+    print(Fore.YELLOW + message)
+
+def log_error(message):
+    print(Fore.RED + message)
 
 def update_changelog(new_version, added_mods, updated_mods, removed_mods, dry_run=False):
     today = date.today().isoformat()
@@ -42,8 +61,7 @@ def update_changelog(new_version, added_mods, updated_mods, removed_mods, dry_ru
         changelog_entry += "\n"
 
     if dry_run:
-        print("[Dry Run] Would update CHANGELOG.md with:\n")
-        print(changelog_entry)
+        banner("[Dry Run] Would update CHANGELOG.md with:", changelog_entry)
         return
 
     try:
@@ -55,7 +73,7 @@ def update_changelog(new_version, added_mods, updated_mods, removed_mods, dry_ru
     with open("CHANGELOG.md", "w") as f:
         f.write(changelog_entry + existing_changelog)
 
-    print("CHANGELOG.md updated.")
+    log_info("CHANGELOG.md updated.")
 
 def load_snapshot(path):
     if os.path.exists(path):
@@ -65,7 +83,7 @@ def load_snapshot(path):
 
 def save_snapshot(path, dependencies, dry_run=False):
     if dry_run:
-        print(f"[Dry Run] Would update snapshot {path}")
+        log_info(f"[Dry Run] Would update snapshot {path}")
         return
     with open(path, 'w') as f:
         json.dump(dependencies, f, indent=4)
@@ -83,7 +101,7 @@ def load_manifest(path):
 
 def save_manifest(path, data, dry_run=False):
     if dry_run:
-        print(f"[Dry Run] Would update manifest {path}")
+        log_info(f"[Dry Run] Would update manifest {path}")
         return
     unique_dependencies = list(dict.fromkeys(sorted(data.get("dependencies", []))))
     data["dependencies"] = unique_dependencies
@@ -92,7 +110,7 @@ def save_manifest(path, data, dry_run=False):
 
 def load_thunderstore_packages(verbose=False):
     if verbose:
-        print("Fetching Thunderstore packages...")
+        log_info("Fetching Thunderstore packages...")
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             resp = requests.get(THUNDERSTORE_API, headers={"User-Agent": "ElRaphik-Repo-Modpack-Updater/1.0"}, timeout=TIMEOUT_TIME)
@@ -107,21 +125,21 @@ def load_thunderstore_packages(verbose=False):
                     lookup[full_name] = versions[0]["version_number"]
 
             if verbose:
-                print(f"Loaded {len(lookup)} packages from Thunderstore.")
+                log_info(f"Loaded {len(lookup)} packages from Thunderstore.")
             return lookup
 
         except requests.RequestException as e:
-            print(f"Attempt {attempt} failed: {e}")
+            log_warning(f"Attempt {attempt} failed: {e}")
             if attempt < MAX_RETRIES:
-                print(f"Retrying in {RETRY_DELAY} seconds...")
+                log_info(f"Retrying in {RETRY_DELAY} seconds...")
                 time.sleep(RETRY_DELAY)
             else:
-                print("❌ Failed to fetch Thunderstore packages after multiple attempts.")
+                log_error("❌ Failed to fetch Thunderstore packages after multiple attempts.")
                 sys.exit(1)
 
 def create_github_issue(mod_full_name):
     if not GITHUB_TOKEN or not GITHUB_REPO:
-        print("Missing GitHub token or repo. Cannot create issue.")
+        log_warning("Missing GitHub token or repo. Cannot create issue.")
         return
 
     url = f"https://api.github.com/repos/{GITHUB_REPO}/issues"
@@ -135,16 +153,24 @@ def create_github_issue(mod_full_name):
     }
     resp = requests.post(url, headers=headers, json=data)
     if resp.status_code != 201:
-        print(f"Failed to create issue: {resp.text}")
+        log_error(f"Failed to create issue: {resp.text}")
 
 def main():
+    start_time = time.time()
+    init(autoreset=True)
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true", help="Run without making any file changes")
     parser.add_argument("--force", action="store_true", help="Force version bump even if nothing changed")
     parser.add_argument("--verbose", action="store_true", help="More verbose output")
     args = parser.parse_args()
 
-    manifest = load_manifest(MANIFEST_PATH)
+    try:
+        manifest = load_manifest(MANIFEST_PATH)
+    except json.JSONDecodeError:
+        log_error(f"❌ Error: {MANIFEST_PATH} is not valid JSON. Please fix it before continuing.")
+        sys.exit(1)
+    
     dependencies = manifest.get("dependencies", [])
 
     updated = False
@@ -161,20 +187,20 @@ def main():
             namespace, name, current_version = dep.split("-")
             full_mod_name = f"{namespace}-{name}"
         except ValueError:
-            print(f"Skipping malformed dependency: {dep}")
+            log_warning(f"Skipping malformed dependency: {dep}")
             new_dependencies.append(dep)
             continue
 
         latest = thunderstore_lookup.get(full_mod_name)
 
         if latest is None:
-            print(f"Dependency not found: {dep}")
+            log_warning(f"Dependency not found: {dep}")
             create_github_issue(dep)
             new_dependencies.append(dep)
             continue
 
         if version.parse(latest) > version.parse(current_version):
-            print(f"Updating {dep} to version {latest}")
+            log_info(f"Updating {dep} to version {latest}")
             updated = True
             new_dep = f"{namespace}-{name}-{latest}"
             new_dependencies.append(new_dep)
@@ -185,7 +211,7 @@ def main():
     snapshot_dependencies = load_snapshot(SNAPSHOT_PATH)
 
     if new_dependencies != snapshot_dependencies:
-        print("Dependencies list changed (mod added or removed).")
+        log_info("Dependencies list changed (mod added or removed).")
         updated = True
 
         snapshot_set = set(snapshot_dependencies)
@@ -208,7 +234,7 @@ def main():
         manifest["version_number"] = new_version
 
         save_manifest(MANIFEST_PATH, manifest, dry_run=args.dry_run)
-        print(f"Manifest updated. Version bumped to v{new_version}")
+        log_info(f"Manifest updated. Version bumped to v{new_version}")
 
         save_snapshot(SNAPSHOT_PATH, new_dependencies, dry_run=args.dry_run)
 
@@ -219,13 +245,15 @@ def main():
         if not args.dry_run:
             try:
                 subprocess.run(["python", "generate_thunderstore_toml.py"], check=True)
-                print("thunderstore.toml regenerated successfully.")
+                log_info("thunderstore.toml regenerated successfully.")
             except subprocess.CalledProcessError:
-                print("Failed to regenerate thunderstore.toml.")
+                log_error("Failed to regenerate thunderstore.toml.")
 
         update_changelog(new_version, added_mods, updated_mods, removed_mods, dry_run=args.dry_run)
     else:
-        print("All dependencies are up to date. No changes, skipping thunderstore.toml regeneration.")
+        log_info("All dependencies are up to date. No changes, skipping thunderstore.toml regeneration.")
+    elapsed_time = time.time() - start_time
+    log_info(f"⏱️ Update process completed in {elapsed_time:.2f} seconds.")
 
 if __name__ == "__main__":
     main()
