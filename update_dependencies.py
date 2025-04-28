@@ -112,26 +112,37 @@ def log_error(message, spinner=None):
     if spinner:
         spinner.start()
 
-def update_changelog(new_version, added_mods, updated_mods, removed_mods, dry_run=False):
+def update_changelog(new_version, added_mods, updated_mods, removed_mods, thunderstore_lookup, dry_run=False):
     today = date.today().isoformat()
     changelog_entry = f"## v{new_version} - {today}\n\n"
 
     if added_mods:
         changelog_entry += "### Added\n"
-        for mod in added_mods:
-            changelog_entry += f"- {mod}\n"
+        for mod in sorted(added_mods):
+            namespace, name, _ = mod.split("-", 2)
+            full_mod_name = f"{namespace}-{name}"
+            package_url = thunderstore_lookup.get(full_mod_name).get("package_url")
+            changelog_entry += f"- [{namespace}-{name}]({package_url})\n"
         changelog_entry += "\n"
 
     if updated_mods:
         changelog_entry += "### Updated\n"
-        for mod in updated_mods:
-            changelog_entry += f"- {mod}\n"
+        for mod in sorted(updated_mods):
+            parts = mod.split(" (")
+            namespace_name = parts[0]
+            namespace, name = namespace_name.split("-", 1)
+            full_mod_name = f"{namespace}-{name}"
+            package_url = thunderstore_lookup.get(full_mod_name).get("package_url")
+            changelog_entry += f"- [{namespace}-{name}]({package_url}) ({parts[1]})\n"
         changelog_entry += "\n"
 
     if removed_mods:
         changelog_entry += "### Removed\n"
-        for mod in removed_mods:
-            changelog_entry += f"- {mod}\n"
+        for mod in sorted(removed_mods):
+            namespace, name, _ = mod.split("-", 2)
+            full_mod_name = f"{namespace}-{name}"
+            package_url = thunderstore_lookup.get(full_mod_name).get("package_url")
+            changelog_entry += f"- [{namespace}-{name}]({package_url})\n"
         changelog_entry += "\n"
 
     if dry_run:
@@ -195,8 +206,12 @@ def fetch_thunderstore_packages(max_retries, retry_delay, timeout_time, verbose=
                 for package in packages:
                     full_name = package.get("full_name")
                     versions = package.get("versions", [])
-                    if full_name and versions:
-                        lookup[full_name] = versions[0]["version_number"]
+                    package_url = package.get("package_url", "")
+                    if full_name:
+                        lookup[full_name] = {
+                            "version": versions[0]["version_number"],
+                            "package_url": package_url
+                        }
                 if verbose:
                     log_info(f"Loaded {len(lookup)} packages from Thunderstore.")
                 return lookup
@@ -250,7 +265,7 @@ def process_dependencies(dependencies, thunderstore_lookup, args):
                 new_dependencies.append(dep)
                 continue
 
-            latest = thunderstore_lookup.get(full_mod_name)
+            latest = thunderstore_lookup.get(full_mod_name).get("version")
 
             if latest is None:
                 log_warning(f"Dependency not found: {dep}")
@@ -328,7 +343,7 @@ def main(args):
         if not args.dry_run:
             safe_run_subprocess(["python", "generate_thunderstore_toml.py"])
 
-        update_changelog(new_version, added_mods, updated_mods, removed_mods, dry_run=args.dry_run)
+        update_changelog(new_version, added_mods, updated_mods, removed_mods, thunderstore_lookup, dry_run=args.dry_run)
     else:
         log_info("All dependencies are up to date. No changes, skipping thunderstore.toml regeneration.")
 
