@@ -214,16 +214,9 @@ def create_github_issue(mod_full_name, no_issue=False):
     if resp.status_code != 201:
         log_error(f"Failed to create issue: {resp.text}")
 
-def main():
+def main(args):
     start_time = time.time()
     init(autoreset=True)
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--dry-run", action="store_true", help="Run without making any file changes")
-    parser.add_argument("--force", action="store_true", help="Force version bump even if nothing changed")
-    parser.add_argument("--verbose", action="store_true", help="More verbose output")
-    parser.add_argument("--no-issue", action="store_true", help="Do not create GitHub issues for missing dependencies")
-    args = parser.parse_args()
 
     try:
         manifest = load_manifest(MANIFEST_PATH)
@@ -324,8 +317,19 @@ def main():
 
 
 if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dry-run", action="store_true", help="Run without making any file changes")
+    parser.add_argument("--force", action="store_true", help="Force version bump even if nothing changed")
+    parser.add_argument("--verbose", action="store_true", help="More verbose output")
+    parser.add_argument("--no-issue", action="store_true", help="Do not create GitHub issues for missing dependencies")
+    args = parser.parse_args()
+
     try:
-        main()
+        main(args)
+    except KeyboardInterrupt:
+        log_error("❌ Script interrupted by user.")
+        sys.exit(1)
     except Exception as e:
         log_error(f"❌ Unexpected error occurred: {e}")
         sys.exit(1)
