@@ -6,6 +6,7 @@ import subprocess
 from datetime import date
 import sys
 import time
+import argparse
 
 GITHUB_REPO = os.getenv("GITHUB_REPOSITORY")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
@@ -18,7 +19,7 @@ MAX_RETRIES = int(os.getenv("THUNDERSTORE_MAX_RETRIES", 3))
 RETRY_DELAY = int(os.getenv("THUNDERSTORE_RETRY_DELAY", 5))
 TIMEOUT_TIME = int(os.getenv("THUNDERSTORE_TIMEOUT_TIME", 10))
 
-def update_changelog(new_version, added_mods, updated_mods, removed_mods):
+def update_changelog(new_version, added_mods, updated_mods, removed_mods, dry_run=False):
     today = date.today().isoformat()
     changelog_entry = f"## v{new_version} - {today}\n\n"
 
@@ -40,6 +41,11 @@ def update_changelog(new_version, added_mods, updated_mods, removed_mods):
             changelog_entry += f"- {mod}\n"
         changelog_entry += "\n"
 
+    if dry_run:
+        print("[Dry Run] Would update CHANGELOG.md with:\n")
+        print(changelog_entry)
+        return
+
     try:
         with open("CHANGELOG.md", "r") as f:
             existing_changelog = f.read()
@@ -57,7 +63,10 @@ def load_snapshot(path):
             return json.load(f)
     return []
 
-def save_snapshot(path, dependencies):
+def save_snapshot(path, dependencies, dry_run=False):
+    if dry_run:
+        print(f"[Dry Run] Would update snapshot {path}")
+        return
     with open(path, 'w') as f:
         json.dump(dependencies, f, indent=4)
 
@@ -72,14 +81,18 @@ def load_manifest(path):
     with open(path, 'r') as f:
         return json.load(f)
 
-def save_manifest(path, data):
+def save_manifest(path, data, dry_run=False):
+    if dry_run:
+        print(f"[Dry Run] Would update manifest {path}")
+        return
     unique_dependencies = list(dict.fromkeys(sorted(data.get("dependencies", []))))
     data["dependencies"] = unique_dependencies
     with open(path, 'w') as f:
         json.dump(data, f, indent=4)
 
-def load_thunderstore_packages():
-    print("Fetching Thunderstore packages...")
+def load_thunderstore_packages(verbose=False):
+    if verbose:
+        print("Fetching Thunderstore packages...")
     for attempt in range(1, MAX_RETRIES + 1):
         try:
             resp = requests.get(THUNDERSTORE_API, headers={"User-Agent": "ElRaphik-Repo-Modpack-Updater/1.0"}, timeout=TIMEOUT_TIME)
@@ -93,7 +106,8 @@ def load_thunderstore_packages():
                 if full_name and versions:
                     lookup[full_name] = versions[0]["version_number"]
 
-            print(f"Loaded {len(lookup)} packages from Thunderstore.")
+            if verbose:
+                print(f"Loaded {len(lookup)} packages from Thunderstore.")
             return lookup
 
         except requests.RequestException as e:
@@ -102,7 +116,7 @@ def load_thunderstore_packages():
                 print(f"Retrying in {RETRY_DELAY} seconds...")
                 time.sleep(RETRY_DELAY)
             else:
-                print(f"❌ Failed to fetch Thunderstore packages after {MAX_RETRIES} attempts.")
+                print("❌ Failed to fetch Thunderstore packages after multiple attempts.")
                 sys.exit(1)
 
 def create_github_issue(mod_full_name):
@@ -124,6 +138,12 @@ def create_github_issue(mod_full_name):
         print(f"Failed to create issue: {resp.text}")
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dry-run", action="store_true", help="Run without making any file changes")
+    parser.add_argument("--force", action="store_true", help="Force version bump even if nothing changed")
+    parser.add_argument("--verbose", action="store_true", help="More verbose output")
+    args = parser.parse_args()
+
     manifest = load_manifest(MANIFEST_PATH)
     dependencies = manifest.get("dependencies", [])
 
@@ -134,7 +154,7 @@ def main():
     added_mods = []
     removed_mods = []
 
-    thunderstore_lookup = load_thunderstore_packages()
+    thunderstore_lookup = load_thunderstore_packages(verbose=args.verbose)
 
     for dep in dependencies:
         try:
@@ -180,28 +200,30 @@ def main():
         for mod in removed:
             removed_mods.append(mod)
 
-    if updated:
-        manifest["dependencies"] = new_dependencies
+    if updated or args.force:
+        manifest["dependencies"] = sorted(new_dependencies)
 
         current_version = manifest.get("version_number", "")
         new_version = bump_patch(current_version)
         manifest["version_number"] = new_version
 
-        save_manifest(MANIFEST_PATH, manifest)
+        save_manifest(MANIFEST_PATH, manifest, dry_run=args.dry_run)
         print(f"Manifest updated. Version bumped to v{new_version}")
 
-        save_snapshot(SNAPSHOT_PATH, new_dependencies)
+        save_snapshot(SNAPSHOT_PATH, new_dependencies, dry_run=args.dry_run)
 
-        with open("version.txt", "w") as f:
-            f.write(new_version)
+        if not args.dry_run:
+            with open("version.txt", "w") as f:
+                f.write(new_version)
 
-        try:
-            subprocess.run(["python", "generate_thunderstore_toml.py"], check=True)
-            print("thunderstore.toml regenerated successfully.")
-        except subprocess.CalledProcessError:
-            print("Failed to regenerate thunderstore.toml.")
+        if not args.dry_run:
+            try:
+                subprocess.run(["python", "generate_thunderstore_toml.py"], check=True)
+                print("thunderstore.toml regenerated successfully.")
+            except subprocess.CalledProcessError:
+                print("Failed to regenerate thunderstore.toml.")
 
-        update_changelog(new_version, added_mods, updated_mods, removed_mods)
+        update_changelog(new_version, added_mods, updated_mods, removed_mods, dry_run=args.dry_run)
     else:
         print("All dependencies are up to date. No changes, skipping thunderstore.toml regeneration.")
 
