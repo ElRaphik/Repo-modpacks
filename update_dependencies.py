@@ -112,38 +112,46 @@ def log_error(message, spinner=None):
     if spinner:
         spinner.start()
 
-def update_changelog(new_version, added_mods, updated_mods, removed_mods, thunderstore_lookup, dry_run=False):
+def update_changelog(new_version, added_mods: list, updated_mods, removed_mods, thunderstore_lookup, dry_run=False):
     today = date.today().isoformat()
     changelog_entry = f"## v{new_version} - {today}\n\n"
 
+    sections_written = False
+
     if added_mods:
-        changelog_entry += "### Added\n"
+        changelog_entry += f"<details>\n<summary>📦 Added ({len(added_mods)})</summary>\n\n"
         for mod in sorted(added_mods):
             namespace, name, _ = mod.split("-", 2)
             full_mod_name = f"{namespace}-{name}"
             package_url = thunderstore_lookup.get(full_mod_name).get("package_url")
             changelog_entry += f"- [{namespace}-{name}]({package_url})\n"
-        changelog_entry += "\n"
+        changelog_entry += "</details>\n"
+        sections_written = True
 
     if updated_mods:
-        changelog_entry += "### Updated\n"
+        changelog_entry += f"<details>\n<summary>🔄 Updated ({len(updated_mods)})</summary>\n\n"
         for mod in sorted(updated_mods):
             parts = mod.split(" (")
             namespace_name = parts[0]
             namespace, name = namespace_name.split("-", 1)
             full_mod_name = f"{namespace}-{name}"
             package_url = thunderstore_lookup.get(full_mod_name).get("package_url")
-            changelog_entry += f"- [{namespace}-{name}]({package_url}) ({parts[1]})\n"
-        changelog_entry += "\n"
+            changelog_entry += f"- [{namespace}-{name}]({package_url}) ({parts[1]}\n" # Is correct because parts[1] already includes the closing )
+        changelog_entry += "</details>\n"
+        sections_written = True
 
     if removed_mods:
-        changelog_entry += "### Removed\n"
+        changelog_entry += f"<details>\n<summary>❌ Removed ({len(removed_mods)})</summary>\n\n"
         for mod in sorted(removed_mods):
             namespace, name, _ = mod.split("-", 2)
             full_mod_name = f"{namespace}-{name}"
             package_url = thunderstore_lookup.get(full_mod_name).get("package_url")
             changelog_entry += f"- [{namespace}-{name}]({package_url})\n"
-        changelog_entry += "\n"
+        changelog_entry += "</details>\n"
+        sections_written = True
+
+    if not sections_written:
+        changelog_entry += "No dependency changes in this release.\n\n"
 
     if dry_run:
         banner("[Dry Run] Would update CHANGELOG.md with:", changelog_entry)
