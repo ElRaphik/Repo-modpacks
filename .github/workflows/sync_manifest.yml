@@ -30,7 +30,7 @@ jobs:
 
       - name: Install Python libraries
         run: |
-          pip install requests packaging toml
+          pip install requests packaging toml colorama
 
       - name: Run dependency updater
         env:
