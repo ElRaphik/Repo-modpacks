@@ -1,6 +1,6 @@
-# My REPO Modpack
+# ElRaphik's R.E.P.O Modpack
 
-Welcome to **My REPO Modpack** — a curated collection of mods bundled together to enhance your experience with the game **REPO**!
+Welcome to **ElRaphik's R.E.P.O Modpack** — a curated collection of mods bundled together to enhance your experience with the game **R.E.P.O**!
 
 ---
 
