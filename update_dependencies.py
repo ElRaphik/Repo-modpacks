@@ -32,12 +32,25 @@ class Spinner:
         self.message = message
         self.delay = delay
         self.thread = threading.Thread(target=self.spin)
+        self.use_cursor_control = sys.stdout.isatty()
+
+    def hide_cursor(self):
+        if self.use_cursor_control:
+            sys.stdout.write("\033[?25l")
+            sys.stdout.flush()
+
+    def show_cursor(self):
+        if self.use_cursor_control:
+            sys.stdout.write("\033[?25h")
+            sys.stdout.flush()
 
     def spin(self):
+        self.hide_cursor()
         while not self.stop_running:
             sys.stdout.write(f"\r{self.message}{next(self.spinner)}")
             sys.stdout.flush()
             time.sleep(self.delay)
+        self.show_cursor()
 
     def start(self):
         self.thread.start()
@@ -54,14 +67,27 @@ def banner(title, filler, color=Fore.WHITE, width=80):
     print(color + filler, flush=True)
     print(color + "=" * width + Style.RESET_ALL, flush=True)
 
-def log_info(message):
+
+def log_info(message, spinner=None):
+    if spinner:
+        spinner.stop()
     print(Fore.BLUE + message, flush=True)
+    if spinner:
+        spinner.start()
 
-def log_warning(message):
+def log_warning(message, spinner=None):
+    if spinner:
+        spinner.stop()
     print(Fore.YELLOW + message, flush=True)
+    if spinner:
+        spinner.start()
 
-def log_error(message):
+def log_error(message, spinner=None):
+    if spinner:
+        spinner.stop()
     print(Fore.RED + message, flush=True)
+    if spinner:
+        spinner.start()
 
 def update_changelog(new_version, added_mods, updated_mods, removed_mods, dry_run=False):
     today = date.today().isoformat()
@@ -290,7 +316,8 @@ def main():
         log_info("All dependencies are up to date. No changes, skipping thunderstore.toml regeneration.")
 
     elapsed_time = time.time() - start_time
-    log_info(f"⏱️ Update process completed in {elapsed_time:.2f} seconds.")
+    banner("✅ Done", f"Update process completed in {elapsed_time:.2f} seconds.", color=Fore.GREEN)
+
 
 if __name__ == "__main__":
     try:
