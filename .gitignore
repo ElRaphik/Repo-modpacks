@@ -25,3 +25,5 @@ venv/
 # Build outputs (if needed later)
 build/
 dist/
+
+helpers/*[!.py]

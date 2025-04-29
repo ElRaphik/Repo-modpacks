@@ -1,4 +1,4 @@
-name: Sync Manifest and Thunderstore TOML
+name: Update dependencies
 
 on:
   schedule:

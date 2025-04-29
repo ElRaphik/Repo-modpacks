@@ -1,4 +1,4 @@
-name: Publish Modpack to Thunderstore
+name: Publish and Release
 
 on:
   workflow_dispatch:
