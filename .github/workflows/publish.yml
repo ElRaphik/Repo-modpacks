@@ -58,7 +58,7 @@ jobs:
       - name: Build Modpack Zip
         run: |
           mkdir -p builds
-          zip -r "builds/ElRaphik-ElRaphik_Modpack-${GITHUB_REF_NAME}.zip" manifest.json icon.png README.md CHANGELOG.md thunderstore.toml
+          zip -r "builds/ElRaphik-ElRaphik_Modpack-${GITHUB_REF_NAME}.zip" manifest.json icon.png README.md CHANGELOG.md
 
       - name: Publish Modpack (only on automatic call)
         if: env.IS_MANUAL == 'false'
