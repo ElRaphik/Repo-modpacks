@@ -1,3 +1,46 @@
+## v1.1.0 - 2025-04-29
+
+<details>
+<summary>📦 Added (30 mods)</summary>
+
+- [AriIcedT-YippeeDuckEnemy](https://thunderstore.io/c/repo/p/AriIcedT/YippeeDuckEnemy/)
+- [BULLETBOT-MoreUpgrades](https://thunderstore.io/c/repo/p/BULLETBOT/MoreUpgrades/)
+- [Beaniebe-Deeproot_Garden](https://thunderstore.io/c/repo/p/Beaniebe/Deeproot_Garden/)
+- [BobisMods-REPORoles](https://thunderstore.io/c/repo/p/BobisMods/REPORoles/)
+- [CarsonJF-EnderPearlMod](https://thunderstore.io/c/repo/p/CarsonJF/EnderPearlMod/)
+- [ColtG5-BoomboxCart](https://thunderstore.io/c/repo/p/ColtG5/BoomboxCart/)
+- [Cronchy-DeathHeadHopper](https://thunderstore.io/c/repo/p/Cronchy/DeathHeadHopper/)
+- [Danos-REPOStats](https://thunderstore.io/c/repo/p/Danos/REPOStats/)
+- [DiFFoZ-BepInEx_Faster_Load_AssetBundles_Patcher](https://thunderstore.io/c/repo/p/DiFFoZ/BepInEx_Faster_Load_AssetBundles_Patcher/)
+- [DougHRito-AhhExplosions](https://thunderstore.io/c/repo/p/DougHRito/AhhExplosions/)
+- [GalaxyMods-MoreValuablesUpgrade](https://thunderstore.io/c/repo/p/GalaxyMods/MoreValuablesUpgrade/)
+- [GofioLabs-ItalianBrainrotValuables](https://thunderstore.io/c/repo/p/GofioLabs/ItalianBrainrotValuables/)
+- [JacuJ-SillyWeaponSounds](https://thunderstore.io/c/repo/p/JacuJ/SillyWeaponSounds/)
+- [Jake_n_Liv-Jake_and_Livs_Retro_Smashpack](https://thunderstore.io/c/repo/p/Jake_n_Liv/Jake_and_Livs_Retro_Smashpack/)
+- [ManancialGD-ChatClipboard](https://thunderstore.io/c/repo/p/ManancialGD/ChatClipboard/)
+- [Megabyte21-BetterFlashlightMod](https://thunderstore.io/c/repo/p/Megabyte21/BetterFlashlightMod/)
+- [MelanieMelicious-Cart_Lights_MelanieMelicious](https://thunderstore.io/c/repo/p/MelanieMelicious/Cart_Lights_MelanieMelicious/)
+- [Nikki-AbioticFactorValuables](https://thunderstore.io/c/repo/p/Nikki/AbioticFactorValuables/)
+- [Rangerbb275-REPOing_Valuables](https://thunderstore.io/c/repo/p/Rangerbb275/REPOing_Valuables/)
+- [Rangerbb275-Rifle](https://thunderstore.io/c/repo/p/Rangerbb275/Rifle/)
+- [RoemisTeam-BlackBox](https://thunderstore.io/c/repo/p/RoemisTeam/BlackBox/)
+- [TitanVortex-BigNuke](https://thunderstore.io/c/repo/p/TitanVortex/BigNuke/)
+- [TopSandwich-ItemResistUpgrade](https://thunderstore.io/c/repo/p/TopSandwich/ItemResistUpgrade/)
+- [darmuh-PocketCartPlus](https://thunderstore.io/c/repo/p/darmuh/PocketCartPlus/)
+- [flipf17-OpenExtractionWithCart](https://thunderstore.io/c/repo/p/flipf17/OpenExtractionWithCart/)
+- [itsUndefined-Shop_Items_Spawn_in_Level](https://thunderstore.io/c/repo/p/itsUndefined/Shop_Items_Spawn_in_Level/)
+- [khalliv-ShoppingListHUD](https://thunderstore.io/c/repo/p/khalliv/ShoppingListHUD/)
+- [nickklmao-JustRetry](https://thunderstore.io/c/repo/p/nickklmao/JustRetry/)
+- [readthisifbad-NetworkingReworked](https://thunderstore.io/c/repo/p/readthisifbad/NetworkingReworked/)
+- [upgame-HumanizedShop](https://thunderstore.io/c/repo/p/upgame/HumanizedShop/)
+</details>
+
+<details>
+<summary>❌ Removed (1 mods)</summary>
+
+- [Tansinator-Map_Value_Tracker](https://thunderstore.io/c/repo/p/Tansinator/Map_Value_Tracker/)
+</details>
+
 ## v1.0.2 - 2025-04-29
 
 <details>
