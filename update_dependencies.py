@@ -167,7 +167,7 @@ def update_changelog(new_version, added_mods: list, updated_mods, removed_mods, 
     if added_mods:
         changelog_entry += f"<details>\n<summary>📦 Added ({len(added_mods)} mods)</summary>\n\n"
         for mod in sorted(added_mods):
-            namespace, name, _ = mod.split("-", 2)
+            namespace, name = mod.split("-", 2)
             full_mod_name = f"{namespace}-{name}"
             package_url = thunderstore_lookup.get(full_mod_name).get("package_url")
             changelog_entry += f"- [{namespace}-{name}]({package_url})\n"
@@ -189,7 +189,7 @@ def update_changelog(new_version, added_mods: list, updated_mods, removed_mods, 
     if removed_mods:
         changelog_entry += f"<details>\n<summary>❌ Removed ({len(removed_mods)} mods)</summary>\n\n"
         for mod in sorted(removed_mods):
-            namespace, name, _ = mod.split("-", 2)
+            namespace, name = mod.split("-", 2)
             full_mod_name = f"{namespace}-{name}"
             package_url = thunderstore_lookup.get(full_mod_name).get("package_url")
             changelog_entry += f"- [{namespace}-{name}]({package_url})\n"
@@ -412,12 +412,15 @@ def main(args):
 
     snapshot_dependencies = load_snapshot(SNAPSHOT_PATH)
 
-    if new_dependencies != snapshot_dependencies:
+    snapshot_names = {"-".join(dep.split("-")[:2]) for dep in snapshot_dependencies}
+    current_names = {"-".join(dep.split("-")[:2]) for dep in new_dependencies}
+
+    if current_names != snapshot_names:
         log_info("Dependencies list changed (mod added or removed).")
         updated = True
 
-        snapshot_set = set(snapshot_dependencies)
-        current_set = set(new_dependencies)
+        snapshot_set = set(snapshot_names)
+        current_set = set(current_names)
 
         added = current_set - snapshot_set
         removed = snapshot_set - current_set
