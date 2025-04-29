@@ -1,3 +1,17 @@
+## v1.1.0 - 2025-04-29
+
+<details>
+<summary>📦 Added (1 mods)</summary>
+
+- [Zehs-REPOLib](https://thunderstore.io/c/repo/p/Zehs/REPOLib/)
+</details>
+
+<details>
+<summary>❌ Removed (1 mods)</summary>
+
+- [Zehs-REPOLib](https://thunderstore.io/c/repo/p/Zehs/REPOLib/)
+</details>
+
 ## v1.0.0 - 2025-04-28
 
 <details>
