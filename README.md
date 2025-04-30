@@ -1,10 +1,13 @@
 # ElRaphik's R.E.P.O Modpack
 
+[![Thunderstore Version](https://img.shields.io/thunderstore/v/ElRaphik/ElRaphik_Modpack?logo=thunderstore&logoColor=white&label=Thunderstore%20Version)](https://thunderstore.io/c/repo/p/ElRaphik/ElRaphik_Modpack/)
+[![Thunderstore Downloads](https://img.shields.io/thunderstore/dt/ElRaphik/ElRaphik_Modpack?logo=thunderstore&logoColor=white&label=Downloads)](https://thunderstore.io/c/repo/p/ElRaphik/ElRaphik_Modpack/)
+
+[![GitHub Release](https://img.shields.io/github/v/release/ElRaphik/Repo-modpacks?logo=github&label=Latest%20Release)](https://github.com/ElRaphik/Repo-modpacks/releases/latest)
+![Publish Action Status](https://img.shields.io/github/actions/workflow/status/ElRaphik/Repo-modpacks/sync_manifest.yml?label=Update%20Dependencies&logo=github)
+![Publish Action Status](https://img.shields.io/github/actions/workflow/status/ElRaphik/Repo-modpacks/publish.yml?label=Publish%20and%20Release&logo=github)
+
 Welcome to **ElRaphik's R.E.P.O Modpack** — a curated collection of mods bundled together to enhance your experience with the game **R.E.P.O**!
-
-[![Update dependencies](https://github.com/ElRaphik/Repo-modpacks/actions/workflows/sync_manifest.yml/badge.svg)](https://github.com/ElRaphik/Repo-modpacks/actions/workflows/sync_manifest.yml) [![Publish and Release](https://github.com/ElRaphik/Repo-modpacks/actions/workflows/publish.yml/badge.svg)](https://github.com/ElRaphik/Repo-modpacks/actions/workflows/publish.yml)
-
-
 
 ---
 

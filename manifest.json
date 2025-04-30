@@ -8,14 +8,12 @@
         "AriIcedT-YippeeDuckEnemy-1.0.1",
         "AxonPhantoms-ExtraMusicforDroneBoomBoxAxon-1.0.0",
         "BULLETBOT-MoreUpgrades-1.4.8",
-        "Beaniebe-Deeproot_Garden-1.0.8",
         "BepInEx-BepInExPack-5.4.2100",
         "BobisMods-REPORoles-2.0.3",
         "CarsonJF-EnderPearlMod-2.1.1",
         "ColtG5-BoomboxCart-1.1.1",
         "Cripplega-MikuAmenoReplaceLobby-1.1.1",
         "Cronchy-DeathHeadHopper-2.0.0",
-        "Danos-REPOStats-0.5.4",
         "DiFFoZ-BepInEx_Faster_Load_AssetBundles_Patcher-1.0.1",
         "DougHRito-AhhExplosions-1.0.5",
         "Eteli-Fart_Grenade-1.0.0",
@@ -74,10 +72,10 @@
         "nickklmao-JustRetry-1.0.2",
         "nickklmao-MenuLib-2.4.1",
         "nickklmao-REPOConfig-1.2.2",
-        "readthisifbad-NetworkingReworked-0.2.2",
         "surfknasen-Walkie_Talkies-1.1.2",
         "upgame-HumanizedShop-1.0.0",
-        "x753_REPO-CustomColors-1.1.1"
+        "x753_REPO-CustomColors-1.1.1",
+        "mattymatty-AsyncLoggers-0.0.0"
     ],
     "version_number": "1.1.0"
 }
