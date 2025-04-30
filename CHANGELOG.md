@@ -1,19 +1,3 @@
-## v1.2.0 - 2025-04-30
-
-<details>
-<summary>📦 Added (1 mods)</summary>
-
-- [mattymatty-AsyncLoggers](https://thunderstore.io/c/repo/p/mattymatty/AsyncLoggers/)
-</details>
-
-<details>
-<summary>❌ Removed (3 mods)</summary>
-
-- [Beaniebe-Deeproot_Garden](https://thunderstore.io/c/repo/p/Beaniebe/Deeproot_Garden/)
-- [Danos-REPOStats](https://thunderstore.io/c/repo/p/Danos/REPOStats/)
-- [readthisifbad-NetworkingReworked](https://thunderstore.io/c/repo/p/readthisifbad/NetworkingReworked/)
-</details>
-
 ## v1.1.0 - 2025-04-29
 
 <details>
