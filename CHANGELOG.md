@@ -1,3 +1,11 @@
+## v1.2.2 - 2025-05-01
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [BobisMods-REPORoles](https://thunderstore.io/c/repo/p/BobisMods/REPORoles/) (2.0.3 → 2.0.4)
+</details>
+
 ## v1.2.1 - 2025-04-30
 
 <details>
