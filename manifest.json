@@ -51,7 +51,7 @@
         "WhalesAllAround-MikuMikuBeamer-1.0.1",
         "XiaohaiMod-DroneBoomBox-1.0.0",
         "XiaohaiMod-XH_DamageShow_EnemyHealthBar-1.0.2",
-        "YMC_MHZ-MoreHead-1.4.0",
+        "YMC_MHZ-MoreHead-1.4.1",
         "Zehs-ExtractionPointConfirmButton-1.1.0",
         "Zehs-LethalCompanyValuables-1.2.1",
         "Zehs-REPOLib-2.1.0",
@@ -77,5 +77,5 @@
         "upgame-HumanizedShop-1.0.0",
         "x753_REPO-CustomColors-1.1.1"
     ],
-    "version_number": "1.2.8"
+    "version_number": "1.2.9"
 }
