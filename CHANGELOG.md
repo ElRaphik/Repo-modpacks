@@ -1,3 +1,13 @@
+## v1.2.8 - 2025-05-04
+
+<details>
+<summary>🔄 Updated (3 mods)</summary>
+
+- [AriIcedT-MinecraftStrongholdLevel](https://thunderstore.io/c/repo/p/AriIcedT/MinecraftStrongholdLevel/) (1.6.1 → 1.7.0)
+- [Nikki-AbioticFactorValuables](https://thunderstore.io/c/repo/p/Nikki/AbioticFactorValuables/) (1.1.0 → 1.1.1)
+- [flipf17-DeadTTS](https://thunderstore.io/c/repo/p/flipf17/DeadTTS/) (1.0.11 → 1.0.12)
+</details>
+
 ## v1.2.7 - 2025-05-03
 
 <details>
