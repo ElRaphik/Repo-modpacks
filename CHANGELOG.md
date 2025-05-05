@@ -1,3 +1,11 @@
+## v1.2.12 - 2025-05-05
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [Cronchy-DeathHeadHopper](https://thunderstore.io/c/repo/p/Cronchy/DeathHeadHopper/) (2.1.3 → 2.1.4)
+</details>
+
 ## v1.2.11 - 2025-05-04
 
 <details>
