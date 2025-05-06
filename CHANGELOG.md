@@ -1,3 +1,11 @@
+## v1.2.13 - 2025-05-06
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [Gassayping-MemeSounds](https://thunderstore.io/c/repo/p/Gassayping/MemeSounds/) (1.3.0 → 1.4.0)
+</details>
+
 ## v1.2.12 - 2025-05-05
 
 <details>
