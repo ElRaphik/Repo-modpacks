@@ -1,3 +1,11 @@
+## v1.2.18 - 2025-05-09
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [Jake_n_Liv-Jake_and_Livs_Retro_Smashpack](https://thunderstore.io/c/repo/p/Jake_n_Liv/Jake_and_Livs_Retro_Smashpack/) (1.2.0 → 1.2.1)
+</details>
+
 ## v1.2.17 - 2025-05-09
 
 <details>
