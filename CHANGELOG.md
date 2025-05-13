@@ -1,3 +1,11 @@
+## v1.2.21 - 2025-05-13
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [AriIcedT-MinecraftStrongholdLevel](https://thunderstore.io/c/repo/p/AriIcedT/MinecraftStrongholdLevel/) (1.8.2 → 1.9.0)
+</details>
+
 ## v1.2.20 - 2025-05-11
 
 <details>
