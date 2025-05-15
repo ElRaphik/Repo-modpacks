@@ -1,3 +1,11 @@
+## v1.3.0 - 2025-05-15
+
+<details>
+<summary>📦 Added (1 mods)</summary>
+
+- [DirtyGames-REPOGambling](https://thunderstore.io/c/repo/p/DirtyGames/REPOGambling/)
+</details>
+
 ## v1.2.22 - 2025-05-14
 
 <details>
