@@ -1,3 +1,11 @@
+## v1.3.1 - 2025-05-21
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [ironbean-LevelNumberUI](https://thunderstore.io/c/repo/p/ironbean/LevelNumberUI/) (1.0.0 → 1.0.1)
+</details>
+
 ## v1.3.0 - 2025-05-15
 
 <details>
