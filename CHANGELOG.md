@@ -1,3 +1,11 @@
+## v1.3.10 - 2025-06-10
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [darmuh-PocketCartPlus](https://thunderstore.io/c/repo/p/darmuh/PocketCartPlus/) (0.3.0 → 0.3.5)
+</details>
+
 ## v1.3.9 - 2025-06-07
 
 <details>
