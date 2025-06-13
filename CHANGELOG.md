@@ -1,3 +1,11 @@
+## v1.3.11 - 2025-06-13
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [Rangerbb275-Hospital_Level](https://thunderstore.io/c/repo/p/Rangerbb275/Hospital_Level/) (2.0.0 → 2.1.0)
+</details>
+
 ## v1.3.10 - 2025-06-10
 
 <details>
