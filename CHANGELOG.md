@@ -1,3 +1,14 @@
+## v1.3.12 - 2025-06-27
+
+<details>
+<summary>🔄 Updated (4 mods)</summary>
+
+- [AriIcedT-MinecraftStrongholdLevel](https://thunderstore.io/c/repo/p/AriIcedT/MinecraftStrongholdLevel/) (1.11.0 → 1.11.1)
+- [Cronchy-DeathHeadHopper](https://thunderstore.io/c/repo/p/Cronchy/DeathHeadHopper/) (2.1.6 → 2.1.7)
+- [nickklmao-MenuLib](https://thunderstore.io/c/repo/p/nickklmao/MenuLib/) (2.4.1 → 2.5.0)
+- [nickklmao-REPOConfig](https://thunderstore.io/c/repo/p/nickklmao/REPOConfig/) (1.2.2 → 1.2.3)
+</details>
+
 ## v1.3.11 - 2025-06-13
 
 <details>
