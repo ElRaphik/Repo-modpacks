@@ -68,7 +68,7 @@
         "khalliv-GambleInShop-1.0.0",
         "khalliv-ShoppingListHUD-1.0.2",
         "linkoid-DreadHeadDuck-1.0.0",
-        "loaforc-loaforcsSoundAPI-2.0.6",
+        "loaforc-loaforcsSoundAPI-2.0.7",
         "loaforc-loaforcsSoundAPI_REPO-1.0.1",
         "mattymatty-AsyncLoggers-2.1.4",
         "nickklmao-JustRetry-1.0.2",
@@ -78,5 +78,5 @@
         "upgame-HumanizedShop-1.0.0",
         "x753_REPO-CustomColors-1.1.1"
     ],
-    "version_number": "1.3.12"
+    "version_number": "1.3.13"
 }
