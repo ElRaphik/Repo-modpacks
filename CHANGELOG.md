@@ -1,3 +1,11 @@
+## v1.3.18 - 2025-07-07
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [loaforc-loaforcsSoundAPI](https://thunderstore.io/c/repo/p/loaforc/loaforcsSoundAPI/) (2.0.7 → 2.0.8)
+</details>
+
 ## v1.3.17 - 2025-07-07
 
 <details>
