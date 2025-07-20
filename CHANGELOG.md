@@ -1,3 +1,12 @@
+## v1.3.23 - 2025-07-20
+
+<details>
+<summary>🔄 Updated (2 mods)</summary>
+
+- [OrtonLongGaming-FNAFLevel](https://thunderstore.io/c/repo/p/OrtonLongGaming/FNAFLevel/) (1.0.3 → 1.0.4)
+- [Rangerbb275-Hospital_Level](https://thunderstore.io/c/repo/p/Rangerbb275/Hospital_Level/) (2.4.0 → 2.4.1)
+</details>
+
 ## v1.3.22 - 2025-07-13
 
 <details>
