@@ -1,3 +1,11 @@
+## v1.3.25 - 2025-08-07
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [YMC_MHZ-MoreHead](https://thunderstore.io/c/repo/p/YMC_MHZ/MoreHead/) (1.4.1 → 1.4.2)
+</details>
+
 ## v1.3.24 - 2025-07-25
 
 <details>
