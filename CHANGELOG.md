@@ -1,3 +1,11 @@
+## v1.3.29 - 2025-08-24
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [RoemisTeam-BlackBox](https://thunderstore.io/c/repo/p/RoemisTeam/BlackBox/) (1.0.2 → 1.0.3)
+</details>
+
 ## v1.3.28 - 2025-08-21
 
 <details>
