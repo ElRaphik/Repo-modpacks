@@ -1,3 +1,12 @@
+## v1.3.36 - 2025-11-06
+
+<details>
+<summary>🔄 Updated (2 mods)</summary>
+
+- [BepInEx-BepInExPack](https://thunderstore.io/c/repo/p/BepInEx/BepInExPack/) (5.4.2100 → 5.4.2304)
+- [mattymatty-AsyncLoggers](https://thunderstore.io/c/repo/p/mattymatty/AsyncLoggers/) (2.2.2 → 2.2.3)
+</details>
+
 ## v1.3.35 - 2025-11-05
 
 <details>
