@@ -1,3 +1,13 @@
+## v1.3.37 - 2025-11-06
+
+<details>
+<summary>🔄 Updated (3 mods)</summary>
+
+- [Zehs-ExtractionPointConfirmButton](https://thunderstore.io/c/repo/p/Zehs/ExtractionPointConfirmButton/) (1.1.0 → 1.2.0)
+- [Zehs-LethalCompanyValuables](https://thunderstore.io/c/repo/p/Zehs/LethalCompanyValuables/) (1.2.1 → 1.3.0)
+- [Zehs-REPOLib](https://thunderstore.io/c/repo/p/Zehs/REPOLib/) (2.1.0 → 3.0.0)
+</details>
+
 ## v1.3.36 - 2025-11-06
 
 <details>
