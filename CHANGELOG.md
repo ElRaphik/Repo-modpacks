@@ -1,3 +1,12 @@
+## v1.3.38 - 2025-11-07
+
+<details>
+<summary>🔄 Updated (2 mods)</summary>
+
+- [BULLETBOT-MoreUpgrades](https://thunderstore.io/c/repo/p/BULLETBOT/MoreUpgrades/) (1.5.1 → 1.5.4)
+- [Zehs-REPOLib](https://thunderstore.io/c/repo/p/Zehs/REPOLib/) (3.0.0 → 3.0.1)
+</details>
+
 ## v1.3.37 - 2025-11-06
 
 <details>
