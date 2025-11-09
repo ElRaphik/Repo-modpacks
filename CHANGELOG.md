@@ -1,3 +1,11 @@
+## v1.3.39 - 2025-11-09
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [flipf17-DeadTTS](https://thunderstore.io/c/repo/p/flipf17/DeadTTS/) (1.0.14 → 1.1.0)
+</details>
+
 ## v1.3.38 - 2025-11-07
 
 <details>
