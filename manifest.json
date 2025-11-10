@@ -15,7 +15,7 @@
         "Cripplega-MikuAmenoReplaceLobby-1.1.1",
         "Cronchy-DeathHeadHopper-2.1.8",
         "DiFFoZ-BepInEx_Faster_Load_AssetBundles_Patcher-1.0.1",
-        "DirtyGames-REPOGambling-1.5.9",
+        "DirtyGames-REPOGambling-1.6.0",
         "DougHRito-AhhExplosions-1.0.5",
         "Eteli-Fart_Grenade-1.0.0",
         "Eteli-Fart_Mine-1.0.0",
@@ -78,5 +78,5 @@
         "upgame-HumanizedShop-1.0.0",
         "x753_REPO-CustomColors-1.1.1"
     ],
-    "version_number": "1.3.39"
+    "version_number": "1.3.40"
 }
