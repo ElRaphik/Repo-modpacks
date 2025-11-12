@@ -55,7 +55,7 @@
         "YMC_MHZ-MoreHead-1.4.2",
         "Zehs-ExtractionPointConfirmButton-1.2.0",
         "Zehs-LethalCompanyValuables-1.3.0",
-        "Zehs-REPOLib-3.0.1",
+        "Zehs-REPOLib-3.0.2",
         "ZeroTails-ExtraMusicforDroneBoomBox-1.0.8",
         "darmuh-PocketCartPlus-0.4.2",
         "dig-REPOPresents-1.3.0",
@@ -78,5 +78,5 @@
         "upgame-HumanizedShop-1.0.0",
         "x753_REPO-CustomColors-1.1.1"
     ],
-    "version_number": "1.3.41"
+    "version_number": "1.3.42"
 }
