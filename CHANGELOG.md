@@ -1,3 +1,11 @@
+## v1.3.43 - 2025-11-13
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [nickklmao-MenuLib](https://thunderstore.io/c/repo/p/nickklmao/MenuLib/) (2.5.0 → 2.5.1)
+</details>
+
 ## v1.3.42 - 2025-11-12
 
 <details>
