@@ -1,3 +1,12 @@
+## v1.3.47 - 2025-11-27
+
+<details>
+<summary>🔄 Updated (2 mods)</summary>
+
+- [BULLETBOT-MoreUpgrades](https://thunderstore.io/c/repo/p/BULLETBOT/MoreUpgrades/) (1.5.5 → 1.5.8)
+- [darmuh-PocketCartPlus](https://thunderstore.io/c/repo/p/darmuh/PocketCartPlus/) (0.4.2 → 0.5.0)
+</details>
+
 ## v1.3.46 - 2025-11-23
 
 <details>
