@@ -7,7 +7,7 @@
         "AriIcedT-MinecraftStrongholdLevel-1.12.1",
         "AriIcedT-YippeeDuckEnemy-1.0.1",
         "AxonPhantoms-ExtraMusicforDroneBoomBoxAxon-1.0.0",
-        "BULLETBOT-MoreUpgrades-1.5.8",
+        "BULLETBOT-MoreUpgrades-1.6.0",
         "BepInEx-BepInExPack-5.4.2304",
         "BobisMods-REPORoles-2.0.7",
         "CarsonJF-EnderPearlMod-2.1.1",
@@ -57,7 +57,7 @@
         "Zehs-LethalCompanyValuables-1.3.0",
         "Zehs-REPOLib-3.0.2",
         "ZeroTails-ExtraMusicforDroneBoomBox-1.0.8",
-        "darmuh-PocketCartPlus-0.5.1",
+        "darmuh-PocketCartPlus-0.5.2",
         "dig-REPOPresents-1.3.0",
         "eth9n-Mimic-1.1.6",
         "flipf17-DeadTTS-1.1.0",
@@ -78,5 +78,5 @@
         "upgame-HumanizedShop-1.0.0",
         "x753_REPO-CustomColors-1.1.1"
     ],
-    "version_number": "1.3.48"
+    "version_number": "1.3.49"
 }
