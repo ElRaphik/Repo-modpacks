@@ -1,3 +1,12 @@
+## v1.3.51 - 2025-12-03
+
+<details>
+<summary>🔄 Updated (2 mods)</summary>
+
+- [AriIcedT-MinecraftStrongholdLevel](https://thunderstore.io/c/repo/p/AriIcedT/MinecraftStrongholdLevel/) (1.12.1 → 1.13.0)
+- [BULLETBOT-MoreUpgrades](https://thunderstore.io/c/repo/p/BULLETBOT/MoreUpgrades/) (1.6.2 → 1.6.3)
+</details>
+
 ## v1.3.50 - 2025-12-01
 
 <details>
