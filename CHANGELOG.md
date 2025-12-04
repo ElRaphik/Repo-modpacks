@@ -1,3 +1,11 @@
+## v1.3.52 - 2025-12-04
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [BULLETBOT-MoreUpgrades](https://thunderstore.io/c/repo/p/BULLETBOT/MoreUpgrades/) (1.6.3 → 1.6.5)
+</details>
+
 ## v1.3.51 - 2025-12-03
 
 <details>
