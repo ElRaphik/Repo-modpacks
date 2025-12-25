@@ -1,3 +1,11 @@
+## v1.3.54 - 2025-12-25
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [OrtonLongGaming-FNAFLevel](https://thunderstore.io/c/repo/p/OrtonLongGaming/FNAFLevel/) (1.0.5 → 1.1.0)
+</details>
+
 ## v1.3.53 - 2025-12-17
 
 <details>
