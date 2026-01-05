@@ -1,3 +1,11 @@
+## v1.4.0 - 2026-01-05
+
+<details>
+<summary>❌ Removed (1 mods)</summary>
+
+- [kekprod-Bigger_Cart](https://thunderstore.io/c/repo/p/kekprod/Bigger_Cart/)
+</details>
+
 ## v1.3.56 - 2026-01-02
 
 <details>
