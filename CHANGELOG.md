@@ -1,3 +1,11 @@
+## v1.4.1 - 2026-01-11
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [XiaohaiMod-XH_DamageShow_EnemyHealthBar](https://thunderstore.io/c/repo/p/XiaohaiMod/XH_DamageShow_EnemyHealthBar/) (1.0.2 → 1.0.3)
+</details>
+
 ## v1.4.0 - 2026-01-05
 
 <details>
