@@ -1,3 +1,11 @@
+## v1.4.5 - 2026-03-17
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [BepInEx-BepInExPack](https://thunderstore.io/c/repo/p/BepInEx/BepInExPack/) (5.4.2304 → 5.4.2305)
+</details>
+
 ## v1.4.4 - 2026-02-21
 
 <details>

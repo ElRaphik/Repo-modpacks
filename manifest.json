@@ -8,7 +8,7 @@
         "AriIcedT-YippeeDuckEnemy-1.0.1",
         "AxonPhantoms-ExtraMusicforDroneBoomBoxAxon-1.0.0",
         "BULLETBOT-MoreUpgrades-1.6.6",
-        "BepInEx-BepInExPack-5.4.2304",
+        "BepInEx-BepInExPack-5.4.2305",
         "BobisMods-REPORoles-2.0.7",
         "CarsonJF-EnderPearlMod-2.1.1",
         "ColtG5-BoomboxCart-1.1.1",
@@ -77,5 +77,5 @@
         "upgame-HumanizedShop-1.0.0",
         "x753_REPO-CustomColors-1.1.1"
     ],
-    "version_number": "1.4.4"
+    "version_number": "1.4.5"
 }
