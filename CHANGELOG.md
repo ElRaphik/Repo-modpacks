@@ -1,3 +1,11 @@
+## v1.4.12 - 2026-05-08
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [itsUndefined-Shop_Items_Spawn_in_Level](https://thunderstore.io/c/repo/p/itsUndefined/Shop_Items_Spawn_in_Level/) (1.7.20 → 1.7.21)
+</details>
+
 ## v1.4.11 - 2026-05-08
 
 <details>

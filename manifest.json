@@ -63,7 +63,7 @@
         "flipf17-DeadTTS-1.1.0",
         "flipf17-OpenExtractionWithCart-1.0.2",
         "ironbean-LevelNumberUI-1.0.1",
-        "itsUndefined-Shop_Items_Spawn_in_Level-1.7.20",
+        "itsUndefined-Shop_Items_Spawn_in_Level-1.7.21",
         "khalliv-GambleInShop-1.0.0",
         "khalliv-ShoppingListHUD-1.0.2",
         "linkoid-DreadHeadDuck-1.0.0",
@@ -77,5 +77,5 @@
         "upgame-HumanizedShop-1.0.0",
         "x753_REPO-CustomColors-1.1.1"
     ],
-    "version_number": "1.4.11"
+    "version_number": "1.4.12"
 }
