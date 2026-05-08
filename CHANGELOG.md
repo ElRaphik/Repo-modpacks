@@ -1,3 +1,14 @@
+## v1.4.10 - 2026-05-08
+
+<details>
+<summary>🔄 Updated (4 mods)</summary>
+
+- [YMC_MHZ-MoreHead](https://thunderstore.io/c/repo/p/YMC_MHZ/MoreHead/) (1.4.4 → 1.4.5)
+- [Zehs-REPOLib](https://thunderstore.io/c/repo/p/Zehs/REPOLib/) (3.0.4 → 4.0.0)
+- [nickklmao-MenuLib](https://thunderstore.io/c/repo/p/nickklmao/MenuLib/) (2.5.1 → 2.5.2)
+- [nickklmao-REPOConfig](https://thunderstore.io/c/repo/p/nickklmao/REPOConfig/) (1.2.3 → 1.2.4)
+</details>
+
 ## v1.4.9 - 2026-05-01
 
 <details>
