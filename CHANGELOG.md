@@ -1,3 +1,11 @@
+## v1.4.11 - 2026-05-08
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [nickklmao-REPOConfig](https://thunderstore.io/c/repo/p/nickklmao/REPOConfig/) (1.2.4 → 1.2.5)
+</details>
+
 ## v1.4.10 - 2026-05-08
 
 <details>
