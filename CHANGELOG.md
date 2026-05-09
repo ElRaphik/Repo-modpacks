@@ -1,3 +1,13 @@
+## v1.4.13 - 2026-05-09
+
+<details>
+<summary>🔄 Updated (3 mods)</summary>
+
+- [Zehs-REPOLib](https://thunderstore.io/c/repo/p/Zehs/REPOLib/) (4.0.0 → 4.0.1)
+- [nickklmao-MenuLib](https://thunderstore.io/c/repo/p/nickklmao/MenuLib/) (2.5.2 → 2.5.3)
+- [nickklmao-REPOConfig](https://thunderstore.io/c/repo/p/nickklmao/REPOConfig/) (1.2.5 → 1.2.6)
+</details>
+
 ## v1.4.12 - 2026-05-08
 
 <details>
