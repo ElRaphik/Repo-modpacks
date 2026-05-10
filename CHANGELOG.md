@@ -1,3 +1,11 @@
+## v1.4.15 - 2026-05-10
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [Patrick-MapVote](https://thunderstore.io/c/repo/p/Patrick/MapVote/) (1.1.1 → 1.1.2)
+</details>
+
 ## v1.4.14 - 2026-05-09
 
 <details>
