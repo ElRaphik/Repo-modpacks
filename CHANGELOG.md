@@ -1,3 +1,11 @@
+## v1.4.19 - 2026-05-13
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [BULLETBOT-MoreUpgrades](https://thunderstore.io/c/repo/p/BULLETBOT/MoreUpgrades/) (1.6.8 → 1.6.9)
+</details>
+
 ## v1.4.18 - 2026-05-13
 
 <details>
