@@ -1,3 +1,11 @@
+## v1.4.18 - 2026-05-13
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [Zehs-REPOLib](https://thunderstore.io/c/repo/p/Zehs/REPOLib/) (4.0.2 → 4.0.3)
+</details>
+
 ## v1.4.17 - 2026-05-12
 
 <details>
