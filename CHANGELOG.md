@@ -1,3 +1,12 @@
+## v1.4.23 - 2026-05-16
+
+<details>
+<summary>🔄 Updated (2 mods)</summary>
+
+- [DirtyGames-REPOGambling](https://thunderstore.io/c/repo/p/DirtyGames/REPOGambling/) (1.7.0 → 1.7.1)
+- [flipf17-DeadTTS](https://thunderstore.io/c/repo/p/flipf17/DeadTTS/) (1.1.0 → 1.1.1)
+</details>
+
 ## v1.4.22 - 2026-05-16
 
 <details>
