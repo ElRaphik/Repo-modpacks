@@ -4,7 +4,7 @@ schemaVersion = "0.0.1"
 [package]
 namespace = "ElRaphik"
 name = "ElRaphik_Modpack"
-versionNumber = "1.4.26"
+versionNumber = "1.4.27"
 description = "A curated collection of mods to enhance your REPO gameplay experience, mostly used for my friends and I."
 website_url = "https://github.com/ElRaphik/Repo-modpacks"
 containsNsfwContent = false
@@ -24,7 +24,7 @@ target = ""
 [package.dependencies]
 Alya-MusicFromDroneBox = "1.0.2"
 AriIcedT-MinecraftStrongholdLevel = "1.14.0"
-AriIcedT-YippeeDuckEnemy = "1.0.1"
+AriIcedT-YippeeDuckEnemy = "1.0.2"
 AxonPhantoms-ExtraMusicforDroneBoomBoxAxon = "1.0.0"
 BULLETBOT-MoreUpgrades = "1.7.3"
 BepInEx-BepInExPack = "5.4.2305"

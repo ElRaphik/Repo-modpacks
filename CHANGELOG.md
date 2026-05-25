@@ -1,3 +1,11 @@
+## v1.4.27 - 2026-05-25
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [AriIcedT-YippeeDuckEnemy](https://thunderstore.io/c/repo/p/AriIcedT/YippeeDuckEnemy/) (1.0.1 → 1.0.2)
+</details>
+
 ## v1.4.26 - 2026-05-18
 
 <details>
