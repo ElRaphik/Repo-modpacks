@@ -1,3 +1,11 @@
+## v1.4.31 - 2026-05-29
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [Nikki-AbioticFactorValuables](https://thunderstore.io/c/repo/p/Nikki/AbioticFactorValuables/) (1.3.0 → 1.3.1)
+</details>
+
 ## v1.4.30 - 2026-05-29
 
 <details>
