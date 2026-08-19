@@ -1,3 +1,11 @@
+## v1.4.36 - 2026-08-19
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [DiFFoZ-BepInEx_Faster_Load_AssetBundles_Patcher](https://thunderstore.io/c/repo/p/DiFFoZ/BepInEx_Faster_Load_AssetBundles_Patcher/) (1.0.1 → 1.1.0)
+</details>
+
 ## v1.4.35 - 2026-08-12
 
 <details>
