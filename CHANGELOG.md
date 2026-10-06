@@ -1,3 +1,11 @@
+## v1.4.39 - 2026-10-06
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [mattymatty-AsyncLoggers](https://thunderstore.io/c/repo/p/mattymatty/AsyncLoggers/) (2.2.3 → 2.2.4)
+</details>
+
 ## v1.4.38 - 2026-09-09
 
 <details>
