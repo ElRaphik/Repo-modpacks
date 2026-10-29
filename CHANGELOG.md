@@ -1,3 +1,12 @@
+## v1.4.40 - 2026-10-29
+
+<details>
+<summary>🔄 Updated (2 mods)</summary>
+
+- [nickklmao-MenuLib](https://thunderstore.io/c/repo/p/nickklmao/MenuLib/) (2.5.4 → 2.6.0)
+- [nickklmao-REPOConfig](https://thunderstore.io/c/repo/p/nickklmao/REPOConfig/) (1.2.6 → 1.2.7)
+</details>
+
 ## v1.4.39 - 2026-10-06
 
 <details>
