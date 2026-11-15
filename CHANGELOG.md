@@ -1,3 +1,11 @@
+## v1.4.43 - 2026-11-15
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [JacuJ-GnomedGnomeSounds](https://thunderstore.io/c/repo/p/JacuJ/GnomedGnomeSounds/) (1.0.0 → 1.1.0)
+</details>
+
 ## v1.4.42 - 2026-11-03
 
 <details>
