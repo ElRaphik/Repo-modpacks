@@ -1,3 +1,11 @@
+## v1.4.47 - 2026-11-22
+
+<details>
+<summary>🔄 Updated (1 mods)</summary>
+
+- [DirtyGames-REPOGambling](https://thunderstore.io/c/repo/p/DirtyGames/REPOGambling/) (1.7.1 → 1.8.0)
+</details>
+
 ## v1.4.46 - 2026-11-18
 
 <details>
